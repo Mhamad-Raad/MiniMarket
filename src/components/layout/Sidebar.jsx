@@ -7,20 +7,25 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next'; // Import the translation hook
 
 export default function Sidebar() {
+  const { t, i18n } = useTranslation(); // Access t() and i18n object
   const [collapsed, setCollapsed] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
   // Toggle Dark/Light Theme
   const toggleTheme = () => {
-    setIsDark(!isDark);
-    if (isDark) {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    } else {
+    const newIsDark = !isDark; // Determine the new state
+    setIsDark(newIsDark); // Update state
+
+    // Toggle the 'dark' class on the document element
+    if (newIsDark) {
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
     }
   };
 
@@ -33,10 +38,15 @@ export default function Sidebar() {
     }
   }, []);
 
+  // Language change function
+  const changeLanguage = (lang) => {
+    i18n.changeLanguage(lang); // Correctly call i18n.changeLanguage
+  };
+
   const links = [
-    { path: '/', label: 'Cashier', icon: ShoppingCart },
-    { path: '/warehouse', label: 'Warehouse', icon: Warehouse },
-    { path: '/admin', label: 'Admin', icon: BarChart2 },
+    { path: '/', label: t('cashier'), icon: ShoppingCart },
+    { path: '/warehouse', label: t('warehouse'), icon: Warehouse },
+    { path: '/admin', label: t('admin'), icon: BarChart2 },
   ];
 
   return (
@@ -95,36 +105,76 @@ export default function Sidebar() {
         ))}
       </nav>
 
+      {/* Language Dropdown */}
       {!collapsed && (
         <div className='flex justify-center items-center px-4 py-4 mt-auto'>
-          <span className='text-text dark:text-white mr-2'>Light</span>
+          <label
+            htmlFor='language-dropdown'
+            className='text-text dark:text-white mr-2'
+          >
+            {t('language')}
+          </label>
+          <select
+            id='language-dropdown'
+            onChange={(e) => changeLanguage(e.target.value)} // Call changeLanguage method
+            className='bg-surface dark:bg-gray-800 text-text dark:text-white rounded-md p-2 border-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary'
+            defaultValue={i18n.language}
+          >
+            <option value='en'>English</option>
+            <option value='ar'>Arabic</option>
+            <option value='ku'>Kurdish</option>
+          </select>
+        </div>
+      )}
+
+      {/* Dark/Light Mode Toggle */}
+      {!collapsed && (
+        <div className='flex justify-center items-center px-4 py-4'>
+          <span className='text-text dark:text-white mr-2'>{t('light')}</span>
           <label
             htmlFor='theme-toggle'
-            className='relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in'
+            className='relative inline-block w-12 h-6 align-middle select-none transition duration-200 ease-in'
           >
             <input
               type='checkbox'
               id='theme-toggle'
               checked={isDark}
               onChange={toggleTheme}
-              className='toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer'
+              className='sr-only peer'
             />
-            <span className='toggle-label block w-10 h-6 rounded-full bg-gray-300 dark:bg-gray-600'></span>
+            <span
+              className={`
+                block w-12 h-6 rounded-full
+                transition-colors duration-300
+                bg-gray-300 dark:bg-gray-600
+                peer-checked:bg-primary
+              `}
+            ></span>
+            <span
+              className={`
+                absolute left-0 top-0 w-6 h-6 bg-white border-2 border-gray-300
+                rounded-full shadow-md transition-transform duration-300
+                peer-checked:translate-x-6
+              `}
+            ></span>
           </label>
-          <span className='text-text dark:text-white ml-2'>Dark</span>
+          <span className='text-text dark:text-white ml-2'>{t('dark')}</span>
         </div>
       )}
 
       <div
-        className={`bg-gray-800 text-center py-2 text-xs text-gray-400 ${
-          collapsed && 'mt-auto'
-        }`}
+        className={`
+    text-center py-2 text-xs
+    ${collapsed ? 'mt-auto' : ''}
+    bg-surface text-gray-400 border-t border-gray-200
+    dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700
+  `}
       >
         {collapsed ? (
           <p>© 2025</p>
         ) : (
           <p className='overflow-hidden whitespace-nowrap'>
-            © 2025 MiniMarket. All rights reserved.
+            {t('allRightsReserved')}
           </p>
         )}
       </div>

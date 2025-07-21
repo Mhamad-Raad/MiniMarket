@@ -6,6 +6,7 @@ import Cashier from './pages/Cashier';
 import Warehouse from './pages/Warehouse';
 import Admin from './pages/Admin';
 import './index.css';
+import './i18n';
 
 const router = createBrowserRouter([
   {
@@ -24,4 +25,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <RouterProvider router={router} />
   </React.StrictMode>
 );
+
 
