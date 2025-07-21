@@ -1,15 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import Layout from './components/layout/Layout';
 import Cashier from './pages/Cashier';
 import Warehouse from './pages/Warehouse';
 import Admin from './pages/Admin';
+import './index.css';
 
 const router = createBrowserRouter([
-  { path: '/', Component: Cashier },
-  { path: '/warehouse', Component: Warehouse },
-  { path: '/admin', Component: Admin },
-  { path: '*', Component: () => <h1>404 Not Found</h1> },
+  {
+    path: '/',
+    Component: Layout,
+    children: [
+      { path: 'cashier', Component: Cashier },
+      { path: 'warehouse', Component: Warehouse },
+      { path: 'admin', Component: Admin },
+    ],
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
