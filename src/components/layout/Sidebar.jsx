@@ -72,6 +72,15 @@ export default function Sidebar() {
           </NavLink>
         ))}
       </nav>
+      <div className='bg-gray-800 text-center py-2 text-xs text-gray-400 mt-auto'>
+        {collapsed ? (
+          <p>© 2025</p>
+        ) : (
+          <p className='overflow-hidden whitespace-nowrap'>
+            © 2025 MiniMarket. All rights reserved.
+          </p>
+        )}
+      </div>
     </aside>
   );
 }
