@@ -1,7 +1,11 @@
+import { useTranslation } from 'react-i18next';
+
 const Cashier = () => {
+  const { t } = useTranslation();
+
   return (
     <div>
-      <h1>Cashier Page</h1>
+      <h1>{t('cashierPage')}</h1>
     </div>
   );
 };

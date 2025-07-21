@@ -7,19 +7,17 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
-import { useTranslation } from 'react-i18next'; // Import the translation hook
+import { useTranslation } from 'react-i18next';
 
 export default function Sidebar() {
-  const { t, i18n } = useTranslation(); // Access t() and i18n object
+  const { t, i18n } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
-  // Toggle Dark/Light Theme
   const toggleTheme = () => {
-    const newIsDark = !isDark; // Determine the new state
-    setIsDark(newIsDark); // Update state
+    const newIsDark = !isDark;
+    setIsDark(newIsDark);
 
-    // Toggle the 'dark' class on the document element
     if (newIsDark) {
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
@@ -29,7 +27,6 @@ export default function Sidebar() {
     }
   };
 
-  // Load theme preference from localStorage on initial load
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
@@ -38,9 +35,8 @@ export default function Sidebar() {
     }
   }, []);
 
-  // Language change function
   const changeLanguage = (lang) => {
-    i18n.changeLanguage(lang); // Correctly call i18n.changeLanguage
+    i18n.changeLanguage(lang);
   };
 
   const links = [
@@ -105,7 +101,6 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* Language Dropdown */}
       {!collapsed && (
         <div className='flex justify-center items-center px-4 py-4 mt-auto'>
           <label
@@ -116,7 +111,7 @@ export default function Sidebar() {
           </label>
           <select
             id='language-dropdown'
-            onChange={(e) => changeLanguage(e.target.value)} // Call changeLanguage method
+            onChange={(e) => changeLanguage(e.target.value)} 
             className='bg-surface dark:bg-gray-800 text-text dark:text-white rounded-md p-2 border-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary'
             defaultValue={i18n.language}
           >
@@ -127,7 +122,6 @@ export default function Sidebar() {
         </div>
       )}
 
-      {/* Dark/Light Mode Toggle */}
       {!collapsed && (
         <div className='flex justify-center items-center px-4 py-4'>
           <span className='text-text dark:text-white mr-2'>{t('light')}</span>
