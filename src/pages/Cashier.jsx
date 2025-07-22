@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Minus } from 'lucide-react';
+import { Plus, Minus, Trash, ListRestart, FileClock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Cashier = () => {
   const { t } = useTranslation();
@@ -52,9 +53,18 @@ const Cashier = () => {
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const resetCartHandler = () => {
+    setProducts([]);
+  };
+
+  const removeItem = (index) => {
+    const updatedProducts = products.filter((_, i) => i !== index);
+    setProducts(updatedProducts);
+  };
+
   return (
     <div className='p-4'>
-      <div className='mb-6'>
+      <div className='mb-6 flex items-center gap-4'>
         <input
           type='text'
           value={searchTerm}
@@ -62,29 +72,46 @@ const Cashier = () => {
           className='w-full p-3 rounded-md bg-surface dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary'
           placeholder={t('searchProduct')}
         />
+        <div className='px-6 py-3 flex flex-col items-center justify-center bg-primary text-white rounded-lg hover:bg-gray-800'>
+          <Link to='/transaction-history'>History</Link>
+          <p>
+            <FileClock />
+          </p>
+        </div>
+        <button
+          className='px-6 py-3 flex flex-col items-center justify-center bg-primary text-white rounded-lg hover:bg-gray-800'
+          onClick={resetCartHandler}
+        >
+          <p>{t('resetCart')}</p>
+          <p>
+            <ListRestart />
+          </p>
+        </button>
       </div>
 
       <div className='overflow-x-auto shadow-md sm:rounded-lg dark:shadow-lg dark:shadow-blue-400'>
-        <div className='max-h-[550px] overflow-y-auto'>
-          {' '}
+        <div className='h-[480px] overflow-y-auto'>
           <table className='min-w-full'>
             <thead className='bg-gray-100 dark:bg-gray-700 sticky top-0 z-10'>
-              {' '}
               <tr>
                 <th className='px-4 py-2 text-left'>{t('productName')}</th>
                 <th className='px-4 py-2 text-left'>{t('upc')}</th>
                 <th className='px-4 py-2 text-left'>{t('price')}</th>
                 <th className='px-4 py-2 text-left'>{t('quantity')}</th>
                 <th className='px-4 py-2 text-left'>{t('total')}</th>
+                <th className='px-4 py-2 text-left'>{t('actions')}</th>{' '}
               </tr>
             </thead>
-            <tbody className='border-b border-gray-200 dark:border-blue-400'>
+            <tbody className=''>
               {filteredProducts.map((product, index) => (
-                <tr key={index}>
-                  <td className='px-4 py-2'>{product.name}</td>
-                  <td className='px-4 py-2'>{product.upc}</td>
-                  <td className='px-4 py-2'>${product.price.toFixed(2)}</td>
-                  <td className='px-4 py-2'>
+                <tr
+                  key={index}
+                  className='border-b border-gray-200 dark:border-blue-400'
+                >
+                  <td className='px-4 py-4'>{product.name}</td>
+                  <td className='px-4 py-4'>{product.upc}</td>
+                  <td className='px-4 py-4'>${product.price.toFixed(2)}</td>
+                  <td className='px-4 py-4'>
                     <div className='flex items-center gap-2'>
                       <input
                         type='number'
@@ -94,13 +121,13 @@ const Cashier = () => {
                       />
                       <button
                         onClick={() => decreaseQuantity(index)}
-                        className='px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700'
+                        className='px-4 py-2 bg-red text-white rounded-lg hover:bg-red-700'
                       >
                         <Minus />
                       </button>
                       <button
                         onClick={() => increaseQuantity(index)}
-                        className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700'
+                        className='px-4 py-2 bg-green text-white rounded-lg hover:bg-green-700'
                       >
                         <Plus />
                       </button>
@@ -109,6 +136,14 @@ const Cashier = () => {
                   <td className='px-4 py-2'>
                     ${(product.price * product.quantity).toFixed(2)}
                   </td>
+                  <td className='px-4 py-2'>
+                    <button
+                      onClick={() => removeItem(index)}
+                      className='px-4 py-2 bg-red-500 text-white rounded-lg bg-red'
+                    >
+                      <Trash />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -116,20 +151,20 @@ const Cashier = () => {
         </div>
       </div>
 
-      <div className='mt-12 flex justify-end gap-2 items-center text-4xl font-bold'>
+      <div className='mt-12 flex justify-between items-center text-4xl font-bold'>
         <span>{t('totalAmount')}:</span>
         <span>${total.toFixed(2)}</span>
       </div>
 
       <div className='mt-8 flex justify-end gap-4'>
         <button
-          className='px-6 py-2 bg-primary text-white rounded-lg hover:bg-blue-700'
+          className='px-6 py-4 bg-primary text-white rounded-lg hover:bg-blue-700'
           onClick={() => setIsReceipt(true)}
         >
           {t('sellWithReceipt')}
         </button>
         <button
-          className='px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700'
+          className='px-6 py-4 bg-green text-white rounded-lg hover:bg-gray-700'
           onClick={() => setIsReceipt(false)}
         >
           {t('sellWithoutReceipt')}

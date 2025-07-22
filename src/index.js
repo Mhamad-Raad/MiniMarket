@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import Cashier from './pages/Cashier';
+import History from './pages/History';
 import Warehouse from './pages/Warehouse';
 import Admin from './pages/Admin';
 import './index.css';
@@ -14,6 +15,7 @@ const router = createBrowserRouter([
     Component: Layout,
     children: [
       { path: '', Component: Cashier },
+      { path: 'transaction-history', Component: History },
       { path: 'warehouse', Component: Warehouse },
       { path: 'admin', Component: Admin },
     ],
@@ -25,5 +27,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <RouterProvider router={router} />
   </React.StrictMode>
 );
-
 
