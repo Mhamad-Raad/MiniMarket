@@ -24,6 +24,132 @@ const TransactionHistory = () => {
         { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
       ],
     },
+    {
+      id: 'TX12346',
+      total: 9.0,
+      date: '2025-07-20T12:00:00',
+      items: [
+        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
+        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
+      ],
+    },
+    {
+      id: 'TX12346',
+      total: 9.0,
+      date: '2025-07-20T12:00:00',
+      items: [
+        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
+        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
+      ],
+    },
+    {
+      id: 'TX12346',
+      total: 9.0,
+      date: '2025-07-20T12:00:00',
+      items: [
+        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
+        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
+      ],
+    },
+    {
+      id: 'TX12346',
+      total: 9.0,
+      date: '2025-07-20T12:00:00',
+      items: [
+        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
+        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
+      ],
+    },
+    {
+      id: 'TX12346',
+      total: 9.0,
+      date: '2025-07-20T12:00:00',
+      items: [
+        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
+        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
+      ],
+    },
+    {
+      id: 'TX12346',
+      total: 9.0,
+      date: '2025-07-20T12:00:00',
+      items: [
+        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
+        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
+      ],
+    },
+    {
+      id: 'TX12346',
+      total: 9.0,
+      date: '2025-07-20T12:00:00',
+      items: [
+        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
+        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
+      ],
+    },
+    {
+      id: 'TX12346',
+      total: 9.0,
+      date: '2025-07-20T12:00:00',
+      items: [
+        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
+        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
+      ],
+    },
+    {
+      id: 'TX12346',
+      total: 9.0,
+      date: '2025-07-20T12:00:00',
+      items: [
+        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
+        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
+      ],
+    },
+    {
+      id: 'TX12346',
+      total: 9.0,
+      date: '2025-07-20T12:00:00',
+      items: [
+        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
+        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
+      ],
+    },
+    {
+      id: 'TX12346',
+      total: 9.0,
+      date: '2025-07-20T12:00:00',
+      items: [
+        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
+        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
+      ],
+    },
+    {
+      id: 'TX12346',
+      total: 9.0,
+      date: '2025-07-20T12:00:00',
+      items: [
+        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
+        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
+      ],
+    },
+    {
+      id: 'TX12346',
+      total: 9.0,
+      date: '2025-07-20T12:00:00',
+      items: [
+        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
+        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
+      ],
+    },
+    {
+      id: 'TX12346',
+      total: 9.0,
+      date: '2025-07-20T12:00:00',
+      items: [
+        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
+        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
+      ],
+    },
   ]);
 
   const [filteredTransactions, setFilteredTransactions] =
@@ -121,38 +247,40 @@ const TransactionHistory = () => {
       </div>
 
       <div className='overflow-x-auto shadow-md sm:rounded-lg dark:shadow-lg'>
-        <table className='min-w-full'>
-          <thead className='bg-gray-100 dark:bg-gray-700 sticky top-0 z-10'>
-            <tr>
-              <th className='px-4 py-2 text-left'>{t('transactionId')}</th>
-              <th className='px-4 py-2 text-left'>{t('totalPrice')}</th>
-              <th className='px-4 py-2 text-left'>{t('date')}</th>
-              <th className='px-4 py-2 text-left'>{t('actions')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredTransactions.map((transaction) => (
-              <tr
-                key={transaction.id}
-                className='border-b border-gray-200 dark:border-blue-400'
-              >
-                <td className='px-4 py-4'>{transaction.id}</td>
-                <td className='px-4 py-4'>${transaction.total.toFixed(2)}</td>
-                <td className='px-4 py-4'>
-                  {new Date(transaction.date).toLocaleString()}
-                </td>
-                <td className='px-4 py-2'>
-                  <button
-                    onClick={() => openTransactionModal(transaction)}
-                    className='px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700'
-                  >
-                    {t('viewDetails')}
-                  </button>
-                </td>
+        <div className='max-h-[650px] overflow-y-auto'>
+          <table className='min-w-full'>
+            <thead className='bg-gray-100 dark:bg-gray-700 sticky top-0 z-10'>
+              <tr>
+                <th className='px-4 py-2 text-left'>{t('transactionId')}</th>
+                <th className='px-4 py-2 text-left'>{t('totalPrice')}</th>
+                <th className='px-4 py-2 text-left'>{t('date')}</th>
+                <th className='px-4 py-2 text-left'>{t('actions')}</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredTransactions.map((transaction) => (
+                <tr
+                  key={transaction.id}
+                  className='border-b border-gray-200 dark:border-blue-400'
+                >
+                  <td className='px-4 py-4'>{transaction.id}</td>
+                  <td className='px-4 py-4'>${transaction.total.toFixed(2)}</td>
+                  <td className='px-4 py-4'>
+                    {new Date(transaction.date).toLocaleString()}
+                  </td>
+                  <td className='px-4 py-2'>
+                    <button
+                      onClick={() => openTransactionModal(transaction)}
+                      className='px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700'
+                    >
+                      {t('viewDetails')}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {selectedTransaction && (
