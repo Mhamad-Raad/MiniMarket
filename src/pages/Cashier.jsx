@@ -1,11 +1,146 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Plus, Minus } from 'lucide-react';
 
 const Cashier = () => {
   const { t } = useTranslation();
 
+  const initialProducts = [
+    { name: 'Apple', upc: '1234567890', price: 2.5, quantity: 2 },
+    { name: 'Banana', upc: '2345678901', price: 1.8, quantity: 3 },
+    { name: 'Orange', upc: '3456789012', price: 3.0, quantity: 1 },
+    { name: 'Grapes', upc: '4567890123', price: 4.0, quantity: 4 },
+    { name: 'Watermelon', upc: '5678901234', price: 5.0, quantity: 2 },
+    { name: 'Pineapple', upc: '6789012345', price: 6.0, quantity: 1 },
+    { name: 'Peach', upc: '7890123456', price: 2.0, quantity: 3 },
+    { name: 'Peach', upc: '7890123456', price: 2.0, quantity: 3 },
+    { name: 'Peach', upc: '7890123456', price: 2.0, quantity: 3 },
+  ];
+
+  const [products, setProducts] = useState(initialProducts);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isReceipt, setIsReceipt] = useState(false);
+
+  const total = products.reduce(
+    (acc, product) => acc + product.price * product.quantity,
+    0
+  );
+
+  const increaseQuantity = (index) => {
+    const updatedProducts = [...products];
+    updatedProducts[index].quantity += 1;
+    setProducts(updatedProducts);
+  };
+
+  const decreaseQuantity = (index) => {
+    const updatedProducts = [...products];
+    if (updatedProducts[index].quantity > 0) {
+      updatedProducts[index].quantity -= 1;
+      setProducts(updatedProducts);
+    }
+  };
+
+  const handleQuantityChange = (e, index) => {
+    const updatedProducts = [...products];
+    updatedProducts[index].quantity = parseInt(e.target.value, 10) || 0;
+    setProducts(updatedProducts);
+  };
+
+  const filteredProducts = products.filter(
+    (product) =>
+      product.upc.includes(searchTerm) ||
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div>
-      <h1>{t('cashierPage')}</h1>
+    <div className='p-4'>
+      <div className='mb-6'>
+        <input
+          type='text'
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className='w-full p-3 rounded-md bg-surface dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary'
+          placeholder={t('searchProduct')}
+        />
+      </div>
+
+      <div className='overflow-x-auto shadow-md sm:rounded-lg dark:shadow-lg dark:shadow-blue-400'>
+        <div className='max-h-[550px] overflow-y-auto'>
+          {' '}
+          <table className='min-w-full'>
+            <thead className='bg-gray-100 dark:bg-gray-700 sticky top-0 z-10'>
+              {' '}
+              <tr>
+                <th className='px-4 py-2 text-left'>{t('productName')}</th>
+                <th className='px-4 py-2 text-left'>{t('upc')}</th>
+                <th className='px-4 py-2 text-left'>{t('price')}</th>
+                <th className='px-4 py-2 text-left'>{t('quantity')}</th>
+                <th className='px-4 py-2 text-left'>{t('total')}</th>
+              </tr>
+            </thead>
+            <tbody className='border-b border-gray-200 dark:border-blue-400'>
+              {filteredProducts.map((product, index) => (
+                <tr key={index}>
+                  <td className='px-4 py-2'>{product.name}</td>
+                  <td className='px-4 py-2'>{product.upc}</td>
+                  <td className='px-4 py-2'>${product.price.toFixed(2)}</td>
+                  <td className='px-4 py-2'>
+                    <div className='flex items-center gap-2'>
+                      <input
+                        type='number'
+                        value={product.quantity}
+                        onChange={(e) => handleQuantityChange(e, index)}
+                        className='w-24 p-2 rounded-md bg-gray-100 dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600'
+                      />
+                      <button
+                        onClick={() => decreaseQuantity(index)}
+                        className='px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700'
+                      >
+                        <Minus />
+                      </button>
+                      <button
+                        onClick={() => increaseQuantity(index)}
+                        className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700'
+                      >
+                        <Plus />
+                      </button>
+                    </div>
+                  </td>
+                  <td className='px-4 py-2'>
+                    ${(product.price * product.quantity).toFixed(2)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className='mt-12 flex justify-end gap-2 items-center text-4xl font-bold'>
+        <span>{t('totalAmount')}:</span>
+        <span>${total.toFixed(2)}</span>
+      </div>
+
+      <div className='mt-8 flex justify-end gap-4'>
+        <button
+          className='px-6 py-2 bg-primary text-white rounded-lg hover:bg-blue-700'
+          onClick={() => setIsReceipt(true)}
+        >
+          {t('sellWithReceipt')}
+        </button>
+        <button
+          className='px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700'
+          onClick={() => setIsReceipt(false)}
+        >
+          {t('sellWithoutReceipt')}
+        </button>
+      </div>
+
+      {isReceipt && (
+        <div className='mt-6 text-center'>
+          <p className='text-lg font-semibold'>{t('receiptGenerated')}</p>
+        </div>
+      )}
     </div>
   );
 };
