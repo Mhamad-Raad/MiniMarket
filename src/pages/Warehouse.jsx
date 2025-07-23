@@ -47,7 +47,7 @@ const Warehouse = () => {
   };
 
   return (
-    <div className='p-4'>
+    <div>
       <div className='flex items-center justify-between gap-4 mb-6'>
         <div className='flex items-center border-2 border-gray-300 dark:border-blue-600 rounded-xl font-bold'>
           <button

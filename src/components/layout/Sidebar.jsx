@@ -48,7 +48,7 @@ export default function Sidebar() {
   return (
     <aside
       className={`${
-        collapsed ? 'w-20' : 'w-56'
+        collapsed ? 'w-20' : 'min-w-56'
       } transition-all duration-300 bg-surface border-r border-gray-200 dark:bg-gray-900 dark:border-gray-700 min-h-screen flex flex-col overflow-hidden`}
     >
       <div
@@ -111,7 +111,7 @@ export default function Sidebar() {
           </label>
           <select
             id='language-dropdown'
-            onChange={(e) => changeLanguage(e.target.value)} 
+            onChange={(e) => changeLanguage(e.target.value)}
             className='bg-surface dark:bg-gray-800 text-text dark:text-white rounded-md p-2 border-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary'
             defaultValue={i18n.language}
           >
