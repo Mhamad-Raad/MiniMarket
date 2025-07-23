@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FileClock } from 'lucide-react';
+
+import { FileClock, ChevronLeft } from 'lucide-react';
 
 const TransactionHistory = () => {
   const { t } = useTranslation();
@@ -281,6 +283,16 @@ const TransactionHistory = () => {
             </tbody>
           </table>
         </div>
+      </div>
+
+      <div className='flex justify-center my-8'>
+        <Link
+          to='/'
+          className='px-6 py-3 flex items-center gap-2 bg-primary text-white rounded-lg hover:bg-blue-700 font-bold text-lg transition'
+        >
+          <ChevronLeft />
+          <p>{t('backToCashier')}</p>
+        </Link>
       </div>
 
       {selectedTransaction && (

@@ -72,12 +72,15 @@ const Cashier = () => {
           className='w-full p-3 rounded-md bg-surface dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary'
           placeholder={t('searchProduct')}
         />
-        <div className='px-6 py-3 flex flex-col items-center justify-center bg-primary text-white rounded-lg hover:bg-gray-800'>
-          <Link to='/transaction-history'>History</Link>
+        <Link
+          to='/transaction-history'
+          className='px-6 py-3 flex flex-col items-center justify-center bg-primary text-white rounded-lg hover:bg-gray-800'
+        >
+          History
           <p>
             <FileClock />
           </p>
-        </div>
+        </Link>
         <button
           className='px-6 py-3 flex flex-col items-center justify-center bg-primary text-white rounded-lg hover:bg-gray-800'
           onClick={resetCartHandler}
