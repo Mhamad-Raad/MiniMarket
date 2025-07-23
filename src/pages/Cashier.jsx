@@ -184,3 +184,8 @@ const Cashier = () => {
 };
 
 export default Cashier;
+
+// add refund functionality
+// add custom price input for products for lighters
+// add warehouse update and delete functgionality
+// change the postion of the upc
