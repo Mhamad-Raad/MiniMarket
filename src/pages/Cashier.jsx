@@ -62,6 +62,18 @@ const Cashier = () => {
     setProducts(updatedProducts);
   };
 
+  const addPredefinedPrice = (amount) => {
+    setProducts([
+      ...products,
+      {
+        name: `Custom Price - $${amount}`,
+        upc: 'N/A',
+        price: amount,
+        quantity: 1,
+      },
+    ]);
+  };
+
   return (
     <div className='p-4'>
       <div className='mb-6 flex items-center gap-4'>
@@ -92,16 +104,44 @@ const Cashier = () => {
         </button>
       </div>
 
+      <div className='flex items-center justify-center text-xl font-bold gap-6 mb-6'>
+        {/* Predefined Price Buttons */}
+        <button
+          className='px-7 py-5 bg-blue-500 text-white rounded-lg hover:bg-blue-700'
+          onClick={() => addPredefinedPrice(250)}
+        >
+          $250
+        </button>
+        <button
+          className='px-7 py-5 bg-blue-500 text-white rounded-lg hover:bg-blue-700'
+          onClick={() => addPredefinedPrice(500)}
+        >
+          $500
+        </button>
+        <button
+          className='px-7 py-5 bg-blue-500 text-white rounded-lg hover:bg-blue-700'
+          onClick={() => addPredefinedPrice(1000)}
+        >
+          $1000
+        </button>
+        <button
+          className='px-7 py-5 bg-blue-500 text-white rounded-lg hover:bg-blue-700'
+          onClick={() => addPredefinedPrice(2000)}
+        >
+          $2000
+        </button>
+      </div>
+
       <div className='overflow-x-auto shadow-md sm:rounded-lg dark:shadow-lg dark:shadow-blue-400'>
         <div className='h-[480px] overflow-y-auto'>
           <table className='min-w-full'>
             <thead className='bg-gray-100 dark:bg-gray-700 sticky top-0 z-10'>
               <tr>
                 <th className='px-4 py-2 text-left'>{t('productName')}</th>
-                <th className='px-4 py-2 text-left'>{t('upc')}</th>
                 <th className='px-4 py-2 text-left'>{t('price')}</th>
                 <th className='px-4 py-2 text-left'>{t('quantity')}</th>
                 <th className='px-4 py-2 text-left'>{t('total')}</th>
+                <th className='px-4 py-2 text-left'>{t('upc')}</th>
                 <th className='px-4 py-2 text-left'>{t('actions')}</th>{' '}
               </tr>
             </thead>
@@ -112,22 +152,21 @@ const Cashier = () => {
                   className='border-b border-gray-200 dark:border-blue-400'
                 >
                   <td className='px-4 py-4'>{product.name}</td>
-                  <td className='px-4 py-4'>{product.upc}</td>
                   <td className='px-4 py-4'>${product.price.toFixed(2)}</td>
                   <td className='px-4 py-4'>
                     <div className='flex items-center gap-2'>
-                      <input
-                        type='number'
-                        value={product.quantity}
-                        onChange={(e) => handleQuantityChange(e, index)}
-                        className='w-24 p-2 rounded-md bg-gray-100 dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600'
-                      />
                       <button
                         onClick={() => decreaseQuantity(index)}
                         className='px-4 py-2 bg-red text-white rounded-lg hover:bg-red-700'
                       >
                         <Minus />
                       </button>
+                      <input
+                        type='number'
+                        value={product.quantity}
+                        onChange={(e) => handleQuantityChange(e, index)}
+                        className='w-24 p-2 rounded-md bg-gray-100 dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600'
+                      />
                       <button
                         onClick={() => increaseQuantity(index)}
                         className='px-4 py-2 bg-green text-white rounded-lg hover:bg-green-700'
@@ -139,6 +178,7 @@ const Cashier = () => {
                   <td className='px-4 py-2'>
                     ${(product.price * product.quantity).toFixed(2)}
                   </td>
+                  <td className='px-4 py-4'>{product.upc}</td>
                   <td className='px-4 py-2'>
                     <button
                       onClick={() => removeItem(index)}
@@ -158,20 +198,28 @@ const Cashier = () => {
         <span>{t('totalAmount')}:</span>
         <span>${total.toFixed(2)}</span>
       </div>
-
-      <div className='mt-8 flex justify-end gap-4'>
+      {/* make a refund button */}
+      <div className='mt-8 flex justify-between gap-4'>
         <button
-          className='px-6 py-4 bg-primary text-white rounded-lg hover:bg-blue-700'
-          onClick={() => setIsReceipt(true)}
+          onClick={() => alert(t('refundAlert'))}
+          className='px-6 py-4 bg-red text-white rounded-lg hover:bg-red-700'
         >
-          {t('sellWithReceipt')}
+          {t('refund')}
         </button>
-        <button
-          className='px-6 py-4 bg-green text-white rounded-lg hover:bg-gray-700'
-          onClick={() => setIsReceipt(false)}
-        >
-          {t('sellWithoutReceipt')}
-        </button>
+        <div className='flex gap-4'>
+          <button
+            className='px-6 py-4 bg-primary text-white rounded-lg hover:bg-blue-700'
+            onClick={() => setIsReceipt(true)}
+          >
+            {t('sellWithReceipt')}
+          </button>
+          <button
+            className='px-6 py-4 bg-green text-white rounded-lg hover:bg-gray-700'
+            onClick={() => setIsReceipt(false)}
+          >
+            {t('sellWithoutReceipt')}
+          </button>
+        </div>
       </div>
 
       {isReceipt && (
@@ -185,7 +233,5 @@ const Cashier = () => {
 
 export default Cashier;
 
-// add refund functionality
-// add custom price input for products for lighters
 // add warehouse update and delete functgionality
 // change the postion of the upc
