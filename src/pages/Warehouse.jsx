@@ -28,6 +28,9 @@ const Warehouse = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDate, setFilterDate] = useState('');
 
+  const [showModal, setShowModal] = useState(false);
+  const [currentItem, setCurrentItem] = useState(null);
+
   const filterItems = () => {
     return items.filter((item) => {
       const matchesName = item.name
@@ -44,6 +47,30 @@ const Warehouse = () => {
 
   const handlePageChange = (page) => {
     setSelectedPage(page);
+  };
+
+  const openModal = (item) => {
+    setCurrentItem(item);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setCurrentItem(null);
+  };
+
+  const handleUpdate = () => {
+    const updatedItems = items.map((item) =>
+      item.id === currentItem.id ? currentItem : item
+    );
+    setItems(updatedItems);
+    closeModal();
+  };
+
+  const handleDelete = () => {
+    const updatedItems = items.filter((item) => item.id !== currentItem.id);
+    setItems(updatedItems);
+    closeModal();
   };
 
   return (
@@ -105,7 +132,8 @@ const Warehouse = () => {
               {filterItems().map((item) => (
                 <tr
                   key={item.id}
-                  className='border-b border-gray-200 dark:border-blue-400'
+                  className='border-b border-gray-200 dark:border-blue-400 cursor-pointer'
+                  onClick={() => openModal(item)}
                 >
                   <td className='px-4 py-4'>{item.id}</td>
                   <td className='px-4 py-4'>{item.name}</td>
@@ -128,104 +156,6 @@ const Warehouse = () => {
         <div className='flex flex-col justify-center items-center mt-6'>
           <h3 className='text-xl font-bold mb-10'>Add New Item</h3>
           <form className='w-full flex flex-col max-w-2xl'>
-            <div className='mb-4 flex items-center'>
-              <label
-                htmlFor='itemName'
-                className='block text-gray-900 dark:text-white mr-4 w-[175px]'
-              >
-                Item Name:
-              </label>
-              <input
-                id='itemName'
-                type='text'
-                className='p-2 w-full rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-600'
-              />
-            </div>
-
-            <div className='mb-4 flex items-center'>
-              <label
-                htmlFor='upc'
-                className='block text-gray-900 dark:text-white mr-4 w-[175px]'
-              >
-                UPC:
-              </label>
-              <input
-                id='upc'
-                type='text'
-                className='p-2 w-full rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-600'
-              />
-            </div>
-
-            <div className='mb-4 flex items-center'>
-              <label
-                htmlFor='quantity'
-                className='block text-gray-900 dark:text-white mr-4 w-[175px]'
-              >
-                Quantity:
-              </label>
-              <input
-                id='quantity'
-                type='number'
-                className='p-2 w-full rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-600'
-              />
-            </div>
-
-            <div className='mb-4 flex items-center'>
-              <label
-                htmlFor='wholesalePrice'
-                className='block text-gray-900 dark:text-white mr-4 w-[175px]'
-              >
-                Wholesale Price:
-              </label>
-              <input
-                id='wholesalePrice'
-                type='number'
-                className='p-2 w-full rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-600'
-              />
-            </div>
-
-            <div className='mb-4 flex items-center'>
-              <label
-                htmlFor='salePrice'
-                className='block text-gray-900 dark:text-white mr-4 w-[175px]'
-              >
-                Sale Price:
-              </label>
-              <input
-                id='salePrice'
-                type='number'
-                className='p-2 w-full rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-600'
-              />
-            </div>
-
-            <div className='mb-4 flex items-center'>
-              <label
-                htmlFor='manufactureDate'
-                className='block text-gray-900 dark:text-white mr-4 w-[175px]'
-              >
-                Manufacture Date:
-              </label>
-              <input
-                id='manufactureDate'
-                type='date'
-                className='p-2 w-full rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-600'
-              />
-            </div>
-
-            <div className='mb-4 flex items-center'>
-              <label
-                htmlFor='expiryDate'
-                className='block text-gray-900 dark:text-white mr-4 w-[175px]'
-              >
-                Expiry Date:
-              </label>
-              <input
-                id='expiryDate'
-                type='date'
-                className='p-2 w-full rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-600'
-              />
-            </div>
-
             <button
               type='submit'
               className='px-6 py-4 mx-auto mt-[20px] w-[200px] bg-green text-white rounded-lg'
@@ -233,6 +163,169 @@ const Warehouse = () => {
               Add Item
             </button>
           </form>
+        </div>
+      )}
+
+      {showModal && currentItem && (
+        <div
+          className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50'
+          onClick={closeModal}
+        >
+          <div
+            className='bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-2xl w-[98vw] max-w-2xl relative animate-fade-in border border-gray-200 dark:border-gray-700'
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+              border: '1px solid rgba(255,255,255,0.18)',
+            }}
+          >
+            <button
+              onClick={closeModal}
+              className='absolute top-3 right-3 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-2xl font-bold focus:outline-none'
+              aria-label='Close'
+            >
+              &times;
+            </button>
+            <h3 className='text-2xl font-bold mb-6 text-center text-blue-600 dark:text-blue-400'>
+              Update Product
+            </h3>
+            <form>
+              <div className='mb-4'>
+                <label
+                  htmlFor='name'
+                  className='block font-semibold mb-1 dark:text-gray-200'
+                >
+                  Name
+                </label>
+                <input
+                  id='name'
+                  type='text'
+                  value={currentItem.name}
+                  onChange={(e) =>
+                    setCurrentItem({ ...currentItem, name: e.target.value })
+                  }
+                  className='p-2 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-blue-500'
+                />
+              </div>
+              <div className='mb-4'>
+                <label
+                  htmlFor='upc'
+                  className='block font-semibold mb-1 dark:text-gray-200'
+                >
+                  UPC
+                </label>
+                <input
+                  id='upc'
+                  type='text'
+                  value={currentItem.upc}
+                  onChange={(e) =>
+                    setCurrentItem({ ...currentItem, upc: e.target.value })
+                  }
+                  className='p-2 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-blue-500'
+                />
+              </div>
+              <div className='mb-4'>
+                <label
+                  htmlFor='quantity'
+                  className='block font-semibold mb-1 dark:text-gray-200'
+                >
+                  Quantity
+                </label>
+                <input
+                  id='quantity'
+                  type='number'
+                  value={currentItem.quantity}
+                  onChange={(e) =>
+                    setCurrentItem({ ...currentItem, quantity: e.target.value })
+                  }
+                  className='p-2 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-blue-500'
+                />
+              </div>
+              <div className='mb-4'>
+                <label
+                  htmlFor='wholesalePrice'
+                  className='block font-semibold mb-1 dark:text-gray-200'
+                >
+                  Wholesale Price
+                </label>
+                <input
+                  id='wholesalePrice'
+                  type='number'
+                  value={currentItem.wholesalePrice}
+                  onChange={(e) =>
+                    setCurrentItem({
+                      ...currentItem,
+                      wholesalePrice: e.target.value,
+                    })
+                  }
+                  className='p-2 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-blue-500'
+                />
+              </div>
+              <div className='mb-4'>
+                <label
+                  htmlFor='salePrice'
+                  className='block font-semibold mb-1 dark:text-gray-200'
+                >
+                  Sale Price
+                </label>
+                <input
+                  id='salePrice'
+                  type='number'
+                  value={currentItem.salePrice}
+                  onChange={(e) =>
+                    setCurrentItem({
+                      ...currentItem,
+                      salePrice: e.target.value,
+                    })
+                  }
+                  className='p-2 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-blue-500'
+                />
+              </div>
+              <div className='mb-6'>
+                <label
+                  htmlFor='expiryDate'
+                  className='block font-semibold mb-1 dark:text-gray-200'
+                >
+                  Expiry Date
+                </label>
+                <input
+                  id='expiryDate'
+                  type='date'
+                  value={currentItem.expiryDate}
+                  onChange={(e) =>
+                    setCurrentItem({
+                      ...currentItem,
+                      expiryDate: e.target.value,
+                    })
+                  }
+                  className='p-2 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-blue-500'
+                />
+              </div>
+              <div className='flex flex-col sm:flex-row gap-3 justify-between'>
+                <button
+                  type='button'
+                  onClick={handleUpdate}
+                  className='bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-semibold transition'
+                >
+                  Update Product
+                </button>
+                <button
+                  type='button'
+                  onClick={handleDelete}
+                  className='bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-semibold transition'
+                >
+                  Delete Product
+                </button>
+                <button
+                  type='button'
+                  onClick={closeModal}
+                  className='bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md font-semibold transition dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100'
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

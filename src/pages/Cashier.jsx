@@ -198,7 +198,6 @@ const Cashier = () => {
         <span>{t('totalAmount')}:</span>
         <span>${total.toFixed(2)}</span>
       </div>
-      {/* make a refund button */}
       <div className='mt-8 flex justify-between gap-4'>
         <button
           onClick={() => alert(t('refundAlert'))}
@@ -232,6 +231,3 @@ const Cashier = () => {
 };
 
 export default Cashier;
-
-// add warehouse update and delete functgionality
-// change the postion of the upc
