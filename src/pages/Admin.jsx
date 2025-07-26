@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ResponsiveBar } from '@nivo/bar';
 import { BarChart, Bell, UserPlus, Trash2 } from 'lucide-react';
+
+import { db } from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 const AdminDashboard = () => {
   const [selectedPage, setSelectedPage] = useState('analytics');
@@ -10,6 +13,9 @@ const AdminDashboard = () => {
     { name: 'Jane Smith', password: 'abcdef' },
   ]);
   const [newUser, setNewUser] = useState({ name: '', password: '' });
+
+  const [test, setTest] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const salesData = {
     today: 5000,
@@ -24,6 +30,28 @@ const AdminDashboard = () => {
     month: 48000,
     year: 600000,
   };
+
+  const fetchUsers = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'users'));
+
+      const usersList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setTest(usersList);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const addUser = () => {
     if (!newUser.name || !newUser.password) return;
@@ -40,6 +68,9 @@ const AdminDashboard = () => {
     { id: 'news', label: 'News', icon: <Bell size={18} /> },
     { id: 'users', label: 'Users', icon: <UserPlus size={18} /> },
   ];
+
+  console.log(test);
+
 
   return (
     <div className='min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white'>
