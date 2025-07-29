@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FileClock } from 'lucide-react';
-import { Link } from 'react-router-dom';
+
 import SearchBar from '../components/cashier/SearchBar';
 import PredefinedPriceButtons from '../components/cashier/PredefinedPriceButtons';
 import ProductsTable from '../components/cashier/ProductsTable';

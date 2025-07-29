@@ -9,7 +9,7 @@ const PredefinedPriceButtons = ({ onAddPrice }) => {
           className='px-7 py-5 bg-blue-500 text-white rounded-lg hover:bg-blue-700'
           onClick={() => onAddPrice(price)}
         >
-          ${price}
+          {price} IQD
         </button>
       ))}
     </div>
