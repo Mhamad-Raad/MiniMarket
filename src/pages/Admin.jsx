@@ -40,7 +40,11 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className='min-h-[400px] flex justify-center items-center bg-white dark:bg-gray-900 text-gray-900 dark:text-white'>
+    <div
+      className={`min-h-[400px] h-full ${
+        !isLoggedIn && 'flex justify-center items-center'
+      } bg-white dark:bg-gray-900 text-gray-900 dark:text-white`}
+    >
       {!isLoggedIn ? (
         <div className='w-[500px] bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md mx-auto border border-gray-200 dark:border-gray-700'>
           <h2 className='text-3xl font-bold mb-4 text-gray-900 dark:text-white'>
