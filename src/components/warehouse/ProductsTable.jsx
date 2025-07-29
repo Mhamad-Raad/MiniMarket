@@ -41,8 +41,8 @@ const ProductsTable = ({ items, openModal, loading }) => {
               <td className='px-4 py-4'>{item.manufactureDate}</td>
               <td className='px-4 py-4'>{item.expiryDate}</td>
               <td className='px-4 py-4'>{item.quantity}</td>
-              <td className='px-4 py-4'>${item.wholesalePrice.toFixed(2)}</td>
-              <td className='px-4 py-4'>${item.salePrice.toFixed(2)}</td>
+              <td className='px-4 py-4'>{`${item.wholesalePrice} IQD`}</td>
+              <td className='px-4 py-4'>{`${item.salePrice} IQD`}</td>
             </tr>
           ))}
         </tbody>
