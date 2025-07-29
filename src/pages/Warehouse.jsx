@@ -1,39 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import WarehouseNav from '../components/warehouse/WarehouseNav';
 import ProductsTable from '../components/warehouse/ProductsTable';
 import AddItemForm from '../components/warehouse/AddItemForm';
 import ProductModal from '../components/warehouse/ProductModal';
+import { getProducts } from '../utils/FetchData';
 
 const Warehouse = () => {
-  const [items, setItems] = useState([
-    {
-      id: 'W12345',
-      name: 'Apple',
-      upc: '1234567890',
-      quantity: 100,
-      wholesalePrice: 1.0,
-      salePrice: 1.5,
-      manufactureDate: '2023-06-01',
-      expiryDate: '2024-06-01',
-    },
-    {
-      id: 'W12346',
-      name: 'Banana',
-      upc: '2345678901',
-      quantity: 150,
-      wholesalePrice: 0.8,
-      salePrice: 1.2,
-      manufactureDate: '2023-05-15',
-      expiryDate: '2024-05-15',
-    },
-  ]);
-
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedPage, setSelectedPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDate, setFilterDate] = useState('');
-
   const [showModal, setShowModal] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const products = await getProducts();
+        setItems(products);
+      } catch (error) {
+        setError(error.message);
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const filterItems = () => {
     return items.filter((item) => {
@@ -88,8 +85,18 @@ const Warehouse = () => {
         setFilterDate={setFilterDate}
       />
 
+      {error && (
+        <div className='p-4 mb-4 text-red-500 bg-red-100 dark:bg-red-900 dark:text-red-200 rounded'>
+          {error}
+        </div>
+      )}
+
       {selectedPage === 0 && (
-        <ProductsTable items={filterItems()} openModal={openModal} />
+        <ProductsTable
+          items={filterItems()}
+          openModal={openModal}
+          loading={loading}
+        />
       )}
 
       {selectedPage === 1 && (

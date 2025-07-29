@@ -27,3 +27,17 @@ export const addNewItem = async (item) => {
     return null;
   }
 };
+
+export const getProducts = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, 'items'));
+    const productsList = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return productsList;
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    throw new Error('Failed to fetch products');
+  }
+};
