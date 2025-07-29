@@ -3,7 +3,7 @@ import WarehouseNav from '../components/warehouse/WarehouseNav';
 import ProductsTable from '../components/warehouse/ProductsTable';
 import AddItemForm from '../components/warehouse/AddItemForm';
 import ProductModal from '../components/warehouse/ProductModal';
-import { getProducts } from '../utils/FetchData';
+import { getProducts, updateItem, deleteItem } from '../utils/FetchData';
 
 const Warehouse = () => {
   const [items, setItems] = useState([]);
@@ -14,6 +14,7 @@ const Warehouse = () => {
   const [filterDate, setFilterDate] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -60,18 +61,39 @@ const Warehouse = () => {
     setCurrentItem(null);
   };
 
-  const handleUpdate = () => {
-    const updatedItems = items.map((item) =>
-      item.id === currentItem.id ? currentItem : item
-    );
-    setItems(updatedItems);
-    closeModal();
+  const handleUpdate = async () => {
+    try {
+      setActionLoading(true);
+      const updatedItem = await updateItem(currentItem.docId, currentItem);
+      const updatedItems = items.map((item) =>
+        item.docId === updatedItem.docId ? updatedItem : item
+      );
+      setItems(updatedItems);
+      closeModal();
+    } catch (error) {
+      setError(error.message);
+      console.error('Update error:', error);
+    } finally {
+      setActionLoading(false);
+    }
   };
 
-  const handleDelete = () => {
-    const updatedItems = items.filter((item) => item.id !== currentItem.id);
-    setItems(updatedItems);
-    closeModal();
+  const handleDelete = async () => {
+    console.log('Deleting item:', items);
+    try {
+      setActionLoading(true);
+      await deleteItem(currentItem.docId);
+      const updatedItems = items.filter(
+        (item) => item.docId !== currentItem.docId
+      );
+      setItems(updatedItems);
+      closeModal();
+    } catch (error) {
+      setError(error.message);
+      console.error('Delete error:', error);
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   return (
@@ -110,6 +132,7 @@ const Warehouse = () => {
           handleUpdate={handleUpdate}
           handleDelete={handleDelete}
           closeModal={closeModal}
+          loading={actionLoading}
         />
       )}
     </div>
