@@ -5,6 +5,8 @@ import SearchBar from '../components/cashier/SearchBar';
 import PredefinedPriceButtons from '../components/cashier/PredefinedPriceButtons';
 import ProductsTable from '../components/cashier/ProductsTable';
 import ActionButtons from '../components/cashier/ActionButtons';
+import { generateReceipt, printReceipt } from '../utils/receiptGenerator';
+import { addHistory, processRefund } from '../utils/FetchData';
 
 const Cashier = () => {
   const { t } = useTranslation();
@@ -77,6 +79,42 @@ const Cashier = () => {
     ]);
   };
 
+  const handleSale = async (withReceipt = false) => {
+    try {
+      const receipt = generateReceipt(products, total);
+
+      await addHistory({
+        saleDate: receipt.date,
+        receiptId: receipt.id,
+        items: receipt.items,
+        total: receipt.total,
+        withReceipt,
+      });
+
+      if (withReceipt) {
+        printReceipt(receipt);
+      }
+
+      setProducts([]);
+      setIsReceipt(false);
+
+      alert(t('saleComplete'));
+    } catch (error) {
+      console.error('Sale error:', error);
+      alert(t('saleError'));
+    }
+  };
+
+  const handleRefund = async () => {
+    try {
+      await processRefund(products);
+      alert(t('refundComplete'));
+      setProducts([]);
+    } catch {
+      alert(t('refundError'));
+    }
+  };
+
   return (
     <div className='p-4'>
       <SearchBar
@@ -97,9 +135,9 @@ const Cashier = () => {
 
       <ActionButtons
         total={total}
-        onSellWithReceipt={() => setIsReceipt(true)}
-        onSellWithoutReceipt={() => setIsReceipt(false)}
-        onRefund={() => alert(t('refundAlert'))}
+        onSellWithReceipt={() => handleSale(true)}
+        onSellWithoutReceipt={() => handleSale(false)}
+        onRefund={handleRefund}
       />
 
       {isReceipt && (
