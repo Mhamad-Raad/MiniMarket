@@ -152,7 +152,7 @@ const ProductModal = ({
               type='button'
               onClick={handleDelete}
               disabled={loading}
-              className='bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-semibold transition disabled:opacity-50'
+              className='bg-red text-white px-4 py-2 rounded-md font-semibold transition disabled:opacity-50'
             >
               {loading ? 'Deleting...' : 'Delete Product'}
             </button>
