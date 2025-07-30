@@ -1,188 +1,60 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
 import { FileClock, ChevronLeft } from 'lucide-react';
+import { fetchHistory } from '../utils/FetchData';
 
 const TransactionHistory = () => {
   const { t } = useTranslation();
 
-  const [transactions] = useState([
-    {
-      id: 'TX12345',
-      total: 15.0,
-      date: '2025-07-21T10:30:00',
-      items: [
-        { name: 'Apple', quantity: 2, price: 2.5, id: 'A123' },
-        { name: 'Banana', quantity: 3, price: 1.8, id: 'B234' },
-      ],
-    },
-    {
-      id: 'TX12346',
-      total: 9.0,
-      date: '2025-07-20T12:00:00',
-      items: [
-        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
-        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
-      ],
-    },
-    {
-      id: 'TX12346',
-      total: 9.0,
-      date: '2025-07-20T12:00:00',
-      items: [
-        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
-        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
-      ],
-    },
-    {
-      id: 'TX12346',
-      total: 9.0,
-      date: '2025-07-20T12:00:00',
-      items: [
-        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
-        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
-      ],
-    },
-    {
-      id: 'TX12346',
-      total: 9.0,
-      date: '2025-07-20T12:00:00',
-      items: [
-        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
-        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
-      ],
-    },
-    {
-      id: 'TX12346',
-      total: 9.0,
-      date: '2025-07-20T12:00:00',
-      items: [
-        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
-        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
-      ],
-    },
-    {
-      id: 'TX12346',
-      total: 9.0,
-      date: '2025-07-20T12:00:00',
-      items: [
-        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
-        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
-      ],
-    },
-    {
-      id: 'TX12346',
-      total: 9.0,
-      date: '2025-07-20T12:00:00',
-      items: [
-        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
-        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
-      ],
-    },
-    {
-      id: 'TX12346',
-      total: 9.0,
-      date: '2025-07-20T12:00:00',
-      items: [
-        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
-        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
-      ],
-    },
-    {
-      id: 'TX12346',
-      total: 9.0,
-      date: '2025-07-20T12:00:00',
-      items: [
-        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
-        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
-      ],
-    },
-    {
-      id: 'TX12346',
-      total: 9.0,
-      date: '2025-07-20T12:00:00',
-      items: [
-        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
-        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
-      ],
-    },
-    {
-      id: 'TX12346',
-      total: 9.0,
-      date: '2025-07-20T12:00:00',
-      items: [
-        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
-        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
-      ],
-    },
-    {
-      id: 'TX12346',
-      total: 9.0,
-      date: '2025-07-20T12:00:00',
-      items: [
-        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
-        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
-      ],
-    },
-    {
-      id: 'TX12346',
-      total: 9.0,
-      date: '2025-07-20T12:00:00',
-      items: [
-        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
-        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
-      ],
-    },
-    {
-      id: 'TX12346',
-      total: 9.0,
-      date: '2025-07-20T12:00:00',
-      items: [
-        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
-        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
-      ],
-    },
-    {
-      id: 'TX12346',
-      total: 9.0,
-      date: '2025-07-20T12:00:00',
-      items: [
-        { name: 'Orange', quantity: 1, price: 3.0, id: 'O345' },
-        { name: 'Peach', quantity: 3, price: 2.0, id: 'P456' },
-      ],
-    },
-  ]);
-
-  const [filteredTransactions, setFilteredTransactions] =
-    useState(transactions);
+  const [transactions, setTransactions] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [filterDate, setFilterDate] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  const filterTransactions = () => {
+  useEffect(() => {
+    const loadHistory = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchHistory();
+        const formatted = data.map((tx) => ({
+          id: tx.receiptId || tx.id,
+          total: tx.total || 0,
+          date: tx.saleDate || new Date().toISOString(),
+          items:
+            tx.items?.map((item, i) => ({
+              id: `${tx.receiptId}-${i}`,
+              name: item.name,
+              price: item.price,
+              quantity: item.quantity,
+            })) || [],
+        }));
+        setTransactions(formatted);
+        setFilteredTransactions(formatted);
+      } catch (err) {
+        console.error('Failed to load history:', err);
+      }
+      setLoading(false);
+    };
+    loadHistory();
+  }, []);
+
+  useEffect(() => {
     let filtered = transactions;
-
     if (filterDate) {
       filtered = filtered.filter((transaction) =>
         transaction.date.includes(filterDate)
       );
     }
-
     if (searchTerm) {
       filtered = filtered.filter((transaction) =>
         transaction.id.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-
     setFilteredTransactions(filtered);
-  };
-
-  const resetFilters = () => {
-    setFilterDate('');
-    setSearchTerm('');
-    setFilteredTransactions(transactions);
-  };
+  }, [searchTerm, filterDate, transactions]);
 
   const openTransactionModal = (transaction) => {
     setSelectedTransaction(transaction);
@@ -192,23 +64,11 @@ const TransactionHistory = () => {
     setSelectedTransaction(null);
   };
 
-  useEffect(() => {
-    let filtered = transactions;
-
-    if (filterDate) {
-      filtered = filtered.filter((transaction) =>
-        transaction.date.includes(filterDate)
-      );
-    }
-
-    if (searchTerm) {
-      filtered = filtered.filter((transaction) =>
-        transaction.id.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    setFilteredTransactions(filtered);
-  }, [searchTerm, filterDate, transactions]);
+  const resetFilters = () => {
+    setFilterDate('');
+    setSearchTerm('');
+    setFilteredTransactions(transactions);
+  };
 
   return (
     <div className='p-4'>
@@ -224,21 +84,18 @@ const TransactionHistory = () => {
             className='w-full p-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary'
             placeholder={t('searchByTransactionId')}
           />
-
           <input
             type='date'
             value={filterDate}
             onChange={(e) => setFilterDate(e.target.value)}
             className='p-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary'
           />
-
           <button
-            onClick={filterTransactions}
+            onClick={() => setFilteredTransactions(transactions)}
             className='px-6 py-2 bg-primary text-white rounded-lg hover:bg-blue-700'
           >
             <FileClock /> {t('filterByDate')}
           </button>
-
           <button
             onClick={resetFilters}
             className='px-6 py-2 bg-red text-white rounded-lg'
@@ -248,42 +105,50 @@ const TransactionHistory = () => {
         </div>
       </div>
 
-      <div className='overflow-x-auto shadow-md sm:rounded-lg dark:shadow-lg'>
-        <div className='max-h-[650px] overflow-y-auto'>
-          <table className='min-w-full'>
-            <thead className='bg-gray-100 dark:bg-gray-700 sticky top-0 z-10'>
-              <tr>
-                <th className='px-4 py-2 text-left'>{t('transactionId')}</th>
-                <th className='px-4 py-2 text-left'>{t('totalPrice')}</th>
-                <th className='px-4 py-2 text-left'>{t('date')}</th>
-                <th className='px-4 py-2 text-left'>{t('actions')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredTransactions.map((transaction) => (
-                <tr
-                  key={transaction.id}
-                  className='border-b border-gray-200 dark:border-blue-400'
-                >
-                  <td className='px-4 py-4'>{transaction.id}</td>
-                  <td className='px-4 py-4'>${transaction.total.toFixed(2)}</td>
-                  <td className='px-4 py-4'>
-                    {new Date(transaction.date).toLocaleString()}
-                  </td>
-                  <td className='px-4 py-2'>
-                    <button
-                      onClick={() => openTransactionModal(transaction)}
-                      className='px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700'
-                    >
-                      {t('viewDetails')}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {loading ? (
+        <div className='text-center py-20 text-lg font-bold text-gray-600 dark:text-gray-300'>
+          {t('loading')}...
         </div>
-      </div>
+      ) : (
+        <div className='overflow-x-auto shadow-md sm:rounded-lg dark:shadow-lg'>
+          <div className='max-h-[650px] overflow-y-auto'>
+            <table className='min-w-full'>
+              <thead className='bg-gray-100 dark:bg-gray-700 sticky top-0 z-10'>
+                <tr>
+                  <th className='px-4 py-2 text-left'>{t('transactionId')}</th>
+                  <th className='px-4 py-2 text-left'>{t('totalPrice')}</th>
+                  <th className='px-4 py-2 text-left'>{t('date')}</th>
+                  <th className='px-4 py-2 text-left'>{t('actions')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredTransactions.map((transaction) => (
+                  <tr
+                    key={transaction.id}
+                    className='border-b border-gray-200 dark:border-blue-400'
+                  >
+                    <td className='px-4 py-4'>{transaction.id}</td>
+                    <td className='px-4 py-4'>
+                      ${transaction.total.toFixed(2)}
+                    </td>
+                    <td className='px-4 py-4'>
+                      {new Date(transaction.date).toLocaleString()}
+                    </td>
+                    <td className='px-4 py-2'>
+                      <button
+                        onClick={() => openTransactionModal(transaction)}
+                        className='px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700'
+                      >
+                        {t('viewDetails')}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       <div className='flex justify-center my-8'>
         <Link
