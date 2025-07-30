@@ -91,6 +91,8 @@ const Cashier = () => {
         products={filteredProducts}
         onQuantityChange={handleQuantityChange}
         onRemove={removeItem}
+        increaseQuantity={increaseQuantity}
+        decreaseQuantity={decreaseQuantity}
       />
 
       <ActionButtons

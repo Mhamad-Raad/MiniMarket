@@ -1,18 +1,14 @@
 import { Plus, Minus, Trash } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-const ProductsTable = ({ products, onQuantityChange, onRemove }) => {
+const ProductsTable = ({
+  products,
+  onQuantityChange,
+  onRemove,
+  increaseQuantity,
+  decreaseQuantity,
+}) => {
   const { t } = useTranslation();
-
-  const increaseQuantity = (index) => {
-    onQuantityChange(index, products[index].quantity + 1);
-  };
-
-  const decreaseQuantity = (index) => {
-    if (products[index].quantity > 0) {
-      onQuantityChange(index, products[index].quantity - 1);
-    }
-  };
 
   const handleQuantityInputChange = (e, index) => {
     onQuantityChange(index, parseInt(e.target.value, 10) || 0);
@@ -63,7 +59,7 @@ const ProductsTable = ({ products, onQuantityChange, onRemove }) => {
                   </div>
                 </td>
                 <td className='px-4 py-2'>
-                  {`${(product.price * product.quantity)} IQD`}
+                  {`${product.price * product.quantity} IQD`}
                 </td>
                 <td className='px-4 py-4'>{product.upc}</td>
                 <td className='px-4 py-2'>
