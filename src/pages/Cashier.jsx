@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next'; // Import the translation hook
+import { useTranslation } from 'react-i18next';
 import { Plus, Minus, Trash } from 'lucide-react';
 
 import SearchBar from '../components/cashier/SearchBar';
@@ -12,18 +12,19 @@ import { addHistory, processRefund, getProducts } from '../utils/FetchData';
 const Cashier = () => {
   const { t } = useTranslation();
 
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]); // Empty cart initially
   const [searchTerm, setSearchTerm] = useState('');
   const [isReceipt, setIsReceipt] = useState(false);
   const [suggestedProducts, setSuggestedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetch products from Firestore on mount
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const fetchedProducts = await getProducts();
-        setProducts(fetchedProducts);
+        setSuggestedProducts(fetchedProducts); // Set fetched products as suggestions
       } catch (err) {
         console.error('Error fetching products:', err);
         setError('Failed to load products.');
@@ -35,7 +36,6 @@ const Cashier = () => {
     fetchProducts();
   }, []);
 
-  console.log('Fetched products:', products);
   const total = products.reduce(
     (acc, product) => acc + product.price * product.quantity,
     0
@@ -67,11 +67,11 @@ const Cashier = () => {
     setSearchTerm(search);
 
     if (search.length === 0) {
-      setSuggestedProducts([]);
+      setSuggestedProducts([]); // Clear suggestions if no search term
       return;
     }
 
-    const filteredSuggestions = products.filter(
+    const filteredSuggestions = suggestedProducts.filter(
       (product) =>
         product.upc.includes(search) ||
         product.name.toLowerCase().includes(search.toLowerCase())
@@ -80,9 +80,11 @@ const Cashier = () => {
     setSuggestedProducts(filteredSuggestions);
   };
 
-  // Add product by UPC
+  // Add product by UPC to the cart
   const addProductByUPC = (upc) => {
-    const foundProduct = products.find((product) => product.upc === upc);
+    const foundProduct = suggestedProducts.find(
+      (product) => product.upc === upc
+    );
     if (foundProduct) {
       const updatedProducts = [...products, { ...foundProduct, quantity: 1 }];
       setProducts(updatedProducts);
@@ -151,31 +153,30 @@ const Cashier = () => {
 
   return (
     <div className='p-4'>
-      <SearchBar
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        resetCartHandler={resetCartHandler}
-        handleSearchChange={handleSearchChange}
-      />
+      <div className='relative w-full'>
+        <SearchBar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          resetCartHandler={resetCartHandler}
+          handleSearchChange={handleSearchChange}
+        />
 
-      {/* Suggested Products (appears if partial match found) */}
-      {suggestedProducts.length > 0 && (
-        <div className='mt-4'>
-          <h3>{t('suggestions')}</h3>
-          <ul>
+        {/* Suggested Products (appears if partial match found) */}
+        {suggestedProducts.length > 0 && (
+          <ul className='w-full max-h-[200px] bg-white dark:bg-gray-800 py-2 px-3 rounded-md shadow-lg border border-gray-300 dark:border-gray-600 absolute top-[60px] left-0 z-10 overflow-y-auto'>
             {suggestedProducts.map((product) => (
               <li key={product.upc}>
                 <button
                   onClick={() => addProductByUPC(product.upc)}
-                  className='text-primary hover:underline'
+                  className='w-full text-left py-2 px-4 text-sm text-gray-900 dark:text-white hover:bg-primary hover:text-white transition-all rounded-md'
                 >
                   {product.name} - {product.upc}
                 </button>
               </li>
             ))}
           </ul>
-        </div>
-      )}
+        )}
+      </div>
 
       <PredefinedPriceButtons onAddPrice={addPredefinedPrice} />
 
