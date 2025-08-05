@@ -12,19 +12,19 @@ import { addHistory, processRefund, getProducts } from '../utils/FetchData';
 const Cashier = () => {
   const { t } = useTranslation();
 
-  const [products, setProducts] = useState([]); // Empty cart initially
+  const [products, setProducts] = useState([]); // To store the available products (from Firestore)
+  const [cart, setCart] = useState([]); // Empty cart initially
   const [searchTerm, setSearchTerm] = useState('');
   const [isReceipt, setIsReceipt] = useState(false);
   const [suggestedProducts, setSuggestedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch products from Firestore on mount
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const fetchedProducts = await getProducts();
-        setSuggestedProducts(fetchedProducts); // Set fetched products as suggestions
+        setProducts(fetchedProducts); // Set fetched products as available products
       } catch (err) {
         console.error('Error fetching products:', err);
         setError('Failed to load products.');
@@ -36,29 +36,29 @@ const Cashier = () => {
     fetchProducts();
   }, []);
 
-  const total = products.reduce(
+  const total = cart.reduce(
     (acc, product) => acc + product.price * product.quantity,
     0
   );
 
   const increaseQuantity = (index) => {
-    const updatedProducts = [...products];
-    updatedProducts[index].quantity += 1;
-    setProducts(updatedProducts);
+    const updatedCart = [...cart];
+    updatedCart[index].quantity += 1;
+    setCart(updatedCart);
   };
 
   const decreaseQuantity = (index) => {
-    const updatedProducts = [...products];
-    if (updatedProducts[index].quantity > 0) {
-      updatedProducts[index].quantity -= 1;
-      setProducts(updatedProducts);
+    const updatedCart = [...cart];
+    if (updatedCart[index].quantity > 0) {
+      updatedCart[index].quantity -= 1;
+      setCart(updatedCart);
     }
   };
 
   const handleQuantityChange = (e, index) => {
-    const updatedProducts = [...products];
-    updatedProducts[index].quantity = parseInt(e.target.value, 10) || 0;
-    setProducts(updatedProducts);
+    const updatedCart = [...cart];
+    updatedCart[index].quantity = parseInt(e.target.value, 10) || 0;
+    setCart(updatedCart);
   };
 
   // Handle search change and display suggested products
@@ -71,7 +71,11 @@ const Cashier = () => {
       return;
     }
 
-    const filteredSuggestions = suggestedProducts.filter(
+    console.log('Searching for:', search);
+    console.log('Available products:', products);
+
+    // Filter products based on UPC or name
+    const filteredSuggestions = products.filter(
       (product) =>
         product.upc.includes(search) ||
         product.name.toLowerCase().includes(search.toLowerCase())
@@ -80,29 +84,45 @@ const Cashier = () => {
     setSuggestedProducts(filteredSuggestions);
   };
 
-  // Add product by UPC to the cart
+  // Add product to cart by UPC
   const addProductByUPC = (upc) => {
-    const foundProduct = suggestedProducts.find(
-      (product) => product.upc === upc
-    );
+    const foundProduct = products.find((product) => product.upc === upc);
     if (foundProduct) {
-      const updatedProducts = [...products, { ...foundProduct, quantity: 1 }];
-      setProducts(updatedProducts);
+      // Check if the product is already in the cart
+      const productInCart = cart.find((product) => product.upc === upc);
+
+      if (productInCart) {
+        // If the product is already in the cart, increase its quantity
+        const updatedCart = cart.map((product) =>
+          product.upc === upc
+            ? { ...product, quantity: product.quantity + 1 }
+            : product
+        );
+        setCart(updatedCart);
+      } else {
+        // Otherwise, add it to the cart with quantity 1
+        const updatedCart = [...cart, { ...foundProduct, quantity: 1 }];
+        setCart(updatedCart);
+      }
     }
+
+    // Reset the search term and clear suggestions after adding a product
+    setSearchTerm('');
+    setSuggestedProducts([]);
   };
 
   const resetCartHandler = () => {
-    setProducts([]); // Reset the cart
+    setCart([]); // Reset the cart
   };
 
   const removeItem = (index) => {
-    const updatedProducts = products.filter((_, i) => i !== index);
-    setProducts(updatedProducts);
+    const updatedCart = cart.filter((_, i) => i !== index);
+    setCart(updatedCart);
   };
 
   const addPredefinedPrice = (amount) => {
-    setProducts([
-      ...products,
+    setCart([
+      ...cart,
       {
         name: `Custom Price - $${amount}`,
         upc: 'N/A',
@@ -114,7 +134,7 @@ const Cashier = () => {
 
   const handleSale = async (withReceipt = false) => {
     try {
-      const receipt = generateReceipt(products, total);
+      const receipt = generateReceipt(cart, total);
 
       await addHistory({
         saleDate: receipt.date,
@@ -128,7 +148,7 @@ const Cashier = () => {
         printReceipt(receipt);
       }
 
-      setProducts([]);
+      setCart([]); // Empty cart after sale
       setIsReceipt(false);
 
       alert(t('saleComplete'));
@@ -140,9 +160,9 @@ const Cashier = () => {
 
   const handleRefund = async () => {
     try {
-      await processRefund(products);
+      await processRefund(cart);
       alert(t('refundComplete'));
-      setProducts([]);
+      setCart([]); // Empty cart after refund
     } catch {
       alert(t('refundError'));
     }
@@ -162,26 +182,28 @@ const Cashier = () => {
         />
 
         {/* Suggested Products (appears if partial match found) */}
-        {suggestedProducts.length > 0 && (
-          <ul className='w-full max-h-[200px] bg-white dark:bg-gray-800 py-2 px-3 rounded-md shadow-lg border border-gray-300 dark:border-gray-600 absolute top-[60px] left-0 z-10 overflow-y-auto'>
-            {suggestedProducts.map((product) => (
-              <li key={product.upc}>
-                <button
-                  onClick={() => addProductByUPC(product.upc)}
-                  className='w-full text-left py-2 px-4 text-sm text-gray-900 dark:text-white hover:bg-primary hover:text-white transition-all rounded-md'
-                >
-                  {product.name} - {product.upc}
-                </button>
-              </li>
-            ))}
-          </ul>
+        {searchTerm && suggestedProducts.length > 0 && (
+          <div className='absolute mt-12 w-full max-h-[140px] overflow-y-scroll bg-white shadow-lg dark:bg-gray-800 dark:shadow-blue-400 rounded-md top-[10px] z-10 '>
+            <ul>
+              {suggestedProducts.map((product) => (
+                <li key={product.upc}>
+                  <button
+                    onClick={() => addProductByUPC(product.upc)}
+                    className='w-full text-left py-2 px-4 text-sm text-gray-900 dark:text-white hover:bg-primary hover:text-white transition-all rounded-md'
+                  >
+                    {product.name} - {product.upc}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
 
       <PredefinedPriceButtons onAddPrice={addPredefinedPrice} />
 
       <ProductsTable
-        products={products}
+        products={cart}
         onQuantityChange={handleQuantityChange}
         onRemove={removeItem}
         increaseQuantity={increaseQuantity}
