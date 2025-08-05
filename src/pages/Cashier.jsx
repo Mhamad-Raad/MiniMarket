@@ -1,32 +1,41 @@
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next'; // Import the translation hook
+import { Plus, Minus, Trash } from 'lucide-react';
 
 import SearchBar from '../components/cashier/SearchBar';
 import PredefinedPriceButtons from '../components/cashier/PredefinedPriceButtons';
 import ProductsTable from '../components/cashier/ProductsTable';
 import ActionButtons from '../components/cashier/ActionButtons';
 import { generateReceipt, printReceipt } from '../utils/receiptGenerator';
-import { addHistory, processRefund } from '../utils/FetchData';
+import { addHistory, processRefund, getProducts } from '../utils/FetchData';
 
 const Cashier = () => {
   const { t } = useTranslation();
 
-  const initialProducts = [
-    { name: 'Apple', upc: '1234567890', price: 2.5, quantity: 2 },
-    { name: 'Banana', upc: '2345678901', price: 1.8, quantity: 3 },
-    { name: 'Orange', upc: '3456789012', price: 3.0, quantity: 1 },
-    { name: 'Grapes', upc: '4567890123', price: 4.0, quantity: 4 },
-    { name: 'Watermelon', upc: '5678901234', price: 5.0, quantity: 2 },
-    { name: 'Pineapple', upc: '6789012345', price: 6.0, quantity: 1 },
-    { name: 'Peach', upc: '7890123456', price: 2.0, quantity: 3 },
-    { name: 'Peach', upc: '7890123456', price: 2.0, quantity: 3 },
-    { name: 'Peach', upc: '7890123456', price: 2.0, quantity: 3 },
-  ];
-
-  const [products, setProducts] = useState(initialProducts);
+  const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isReceipt, setIsReceipt] = useState(false);
+  const [suggestedProducts, setSuggestedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const fetchedProducts = await getProducts();
+        setProducts(fetchedProducts);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        setError('Failed to load products.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  console.log('Fetched products:', products);
   const total = products.reduce(
     (acc, product) => acc + product.price * product.quantity,
     0
@@ -52,14 +61,36 @@ const Cashier = () => {
     setProducts(updatedProducts);
   };
 
-  const filteredProducts = products.filter(
-    (product) =>
-      product.upc.includes(searchTerm) ||
-      product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Handle search change and display suggested products
+  const handleSearchChange = (e) => {
+    const search = e.target.value;
+    setSearchTerm(search);
+
+    if (search.length === 0) {
+      setSuggestedProducts([]);
+      return;
+    }
+
+    const filteredSuggestions = products.filter(
+      (product) =>
+        product.upc.includes(search) ||
+        product.name.toLowerCase().includes(search.toLowerCase())
+    );
+
+    setSuggestedProducts(filteredSuggestions);
+  };
+
+  // Add product by UPC
+  const addProductByUPC = (upc) => {
+    const foundProduct = products.find((product) => product.upc === upc);
+    if (foundProduct) {
+      const updatedProducts = [...products, { ...foundProduct, quantity: 1 }];
+      setProducts(updatedProducts);
+    }
+  };
 
   const resetCartHandler = () => {
-    setProducts([]);
+    setProducts([]); // Reset the cart
   };
 
   const removeItem = (index) => {
@@ -115,18 +146,41 @@ const Cashier = () => {
     }
   };
 
+  if (loading) return <p>Loading products...</p>;
+  if (error) return <p>{error}</p>;
+
   return (
     <div className='p-4'>
       <SearchBar
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         resetCartHandler={resetCartHandler}
+        handleSearchChange={handleSearchChange}
       />
+
+      {/* Suggested Products (appears if partial match found) */}
+      {suggestedProducts.length > 0 && (
+        <div className='mt-4'>
+          <h3>{t('suggestions')}</h3>
+          <ul>
+            {suggestedProducts.map((product) => (
+              <li key={product.upc}>
+                <button
+                  onClick={() => addProductByUPC(product.upc)}
+                  className='text-primary hover:underline'
+                >
+                  {product.name} - {product.upc}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <PredefinedPriceButtons onAddPrice={addPredefinedPrice} />
 
       <ProductsTable
-        products={filteredProducts}
+        products={products}
         onQuantityChange={handleQuantityChange}
         onRemove={removeItem}
         increaseQuantity={increaseQuantity}

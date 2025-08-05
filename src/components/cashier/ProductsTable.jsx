@@ -35,7 +35,7 @@ const ProductsTable = ({
                 className='border-b border-gray-200 dark:border-blue-400'
               >
                 <td className='px-4 py-4'>{product.name}</td>
-                <td className='px-4 py-4'>{`${product.price} IQD`}</td>
+                <td className='px-4 py-4'>{`${product.salePrice} IQD`}</td>
                 <td className='px-4 py-4'>
                   <div className='flex items-center gap-2'>
                     <button
@@ -59,7 +59,7 @@ const ProductsTable = ({
                   </div>
                 </td>
                 <td className='px-4 py-2'>
-                  {`${product.price * product.quantity} IQD`}
+                  {`${product.salePrice * product.quantity} IQD`}
                 </td>
                 <td className='px-4 py-4'>{product.upc}</td>
                 <td className='px-4 py-2'>

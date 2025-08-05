@@ -2,7 +2,12 @@ import { FileClock, ListRestart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-const SearchBar = ({ searchTerm, setSearchTerm, resetCartHandler }) => {
+const SearchBar = ({
+  searchTerm,
+  setSearchTerm,
+  resetCartHandler,
+  handleSearchChange,
+}) => {
   const { t } = useTranslation();
 
   return (
@@ -10,7 +15,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, resetCartHandler }) => {
       <input
         type='text'
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={(e) => handleSearchChange(e)} // Use the passed down handler
         className='w-full p-3 rounded-md bg-surface dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary'
         placeholder={t('searchProduct')}
       />
