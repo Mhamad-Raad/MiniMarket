@@ -61,20 +61,24 @@ const Cashier = () => {
     setCart(updatedCart);
   };
 
-  // Handle search change and display suggested products
   const handleSearchChange = (e) => {
     const search = e.target.value;
     setSearchTerm(search);
 
-    if (search.length === 0) {
-      setSuggestedProducts([]); // Clear suggestions if no search term
+    const foundProduct = products.find((product) => product.upc === search);
+    if (foundProduct) {
+      const updatedCart = [...cart, { ...foundProduct, quantity: 1 }];
+      setCart(updatedCart);
+
+      setSuggestedProducts([]);
       return;
     }
 
-    console.log('Searching for:', search);
-    console.log('Available products:', products);
+    if (search.length === 0) {
+      setSuggestedProducts([]);
+      return;
+    }
 
-    // Filter products based on UPC or name
     const filteredSuggestions = products.filter(
       (product) =>
         product.upc.includes(search) ||
@@ -84,7 +88,6 @@ const Cashier = () => {
     setSuggestedProducts(filteredSuggestions);
   };
 
-  // Add product to cart by UPC
   const addProductByUPC = (upc) => {
     const foundProduct = products.find((product) => product.upc === upc);
     if (foundProduct) {

@@ -105,23 +105,23 @@ const AddItemForm = ({ onAddItem }) => {
       <form onSubmit={handleSubmit} className='w-full max-w-2xl space-y-4'>
         <div className='grid grid-cols-[200px_1fr] gap-4 items-center'>
           <label className='font-medium text-gray-700 dark:text-gray-200'>
-            Name:
-          </label>
-          <input
-            type='text'
-            value={newItem.name}
-            onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-            className='p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
-            required
-          />
-
-          <label className='font-medium text-gray-700 dark:text-gray-200'>
             UPC:
           </label>
           <input
             type='text'
             value={newItem.upc}
             onChange={(e) => setNewItem({ ...newItem, upc: e.target.value })}
+            className='p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
+            required
+          />
+          
+          <label className='font-medium text-gray-700 dark:text-gray-200'>
+            Name:
+          </label>
+          <input
+            type='text'
+            value={newItem.name}
+            onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
             className='p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
             required
           />
