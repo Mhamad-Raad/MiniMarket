@@ -47,16 +47,19 @@ const TransactionHistory = () => {
 
   useEffect(() => {
     let filtered = transactions;
+
     if (filterDate) {
       filtered = filtered.filter((transaction) =>
         transaction.date.includes(filterDate)
       );
     }
+
     if (searchTerm) {
       filtered = filtered.filter((transaction) =>
         transaction.id.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
+
     setFilteredTransactions(filtered);
   }, [searchTerm, filterDate, transactions]);
 
@@ -76,7 +79,7 @@ const TransactionHistory = () => {
         setSearchTerm={setSearchTerm}
         filterDate={filterDate}
         setFilterDate={setFilterDate}
-        onFilter={() => setFilteredTransactions(transactions)}
+        onFilter={() => setFilteredTransactions(filteredTransactions)}
         onReset={resetFilters}
         t={t}
       />
