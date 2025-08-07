@@ -1,8 +1,12 @@
-import { useState } from 'react';
-import { addNewItem } from '../../utils/FetchData';
+import { useState, useEffect } from 'react';
+import { addNewItem, updateItem, getProducts } from '../../utils/FetchData';
+import { useTranslation } from 'react-i18next';
+
 import Toast from '../Toast';
 
 const AddItemForm = ({ onAddItem }) => {
+  const { t } = useTranslation();
+
   const [newItem, setNewItem] = useState({
     name: '',
     upc: '',
@@ -19,6 +23,8 @@ const AddItemForm = ({ onAddItem }) => {
     message: '',
     type: 'success',
   });
+  const [existingProduct, setExistingProduct] = useState(null);
+  const [allProducts, setAllProducts] = useState([]);
 
   const showToast = (message, type = 'success') => {
     setToast({ show: true, message, type });
@@ -30,7 +36,14 @@ const AddItemForm = ({ onAddItem }) => {
 
   const validateForm = () => {
     for (const [key, value] of Object.entries(newItem)) {
-      if (!value || value.trim() === '') {
+      if (typeof value === 'string' && !value.trim()) {
+        setError(
+          `${key.charAt(0).toUpperCase() + key.slice(1)} cannot be empty`
+        );
+        return false;
+      }
+
+      if (!value || value === '') {
         setError(
           `${key.charAt(0).toUpperCase() + key.slice(1)} cannot be empty`
         );
@@ -40,6 +53,51 @@ const AddItemForm = ({ onAddItem }) => {
     return true;
   };
 
+  const handleSearchUPC = async (e) => {
+    const upc = e.target.value;
+    setNewItem({ ...newItem, upc });
+
+    if (upc.length === 0) {
+      setExistingProduct(null);
+      return;
+    }
+
+    try {
+      const products = allProducts;
+      const foundProduct = products.find((item) => item.upc === upc);
+
+      if (foundProduct) {
+        setExistingProduct(foundProduct);
+        setNewItem((prev) => ({
+          ...prev,
+          name: foundProduct.name,
+          wholesalePrice: foundProduct.wholesalePrice,
+          salePrice: foundProduct.salePrice,
+          quantity: foundProduct.quantity,
+        }));
+      } else {
+        setExistingProduct(null);
+      }
+    } catch (err) {
+      console.error('Error fetching product:', err);
+      setError('Failed to fetch product details');
+    }
+  };
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const fetchedProducts = await getProducts();
+        setAllProducts(fetchedProducts);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        setError('Failed to load products.');
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -47,22 +105,43 @@ const AddItemForm = ({ onAddItem }) => {
     if (!validateForm()) return;
 
     setLoading(true);
+
+
     try {
-      const itemWithId = {
-        ...newItem,
-        id: `W${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
-        quantity: Number(newItem.quantity),
-        wholesalePrice: Number(newItem.wholesalePrice),
-        salePrice: Number(newItem.salePrice),
-      };
+      if (existingProduct) {
+        const updatedItem = {
+          ...existingProduct,
+          quantity: existingProduct.quantity + parseInt(newItem.quantity),
+          manufactureDate: newItem.manufactureDate,
+          expiryDate: newItem.expiryDate,
+        };
 
-      const addedItem = await addNewItem(itemWithId);
+        const updatedProduct = await updateItem(
+          existingProduct.docId,
+          updatedItem
+        );
 
-      if (!addedItem) {
-        throw new Error('Failed to add item');
+
+        if (updatedProduct) {
+          showToast('Product updated successfully!', 'success');
+          onAddItem(updatedProduct);
+        }
+      } else {
+        const itemWithId = {
+          ...newItem,
+          id: `W${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
+          quantity: Number(newItem.quantity),
+          wholesalePrice: Number(newItem.wholesalePrice),
+          salePrice: Number(newItem.salePrice),
+        };
+
+        const addedItem = await addNewItem(itemWithId);
+        if (addedItem) {
+          showToast('Item added successfully!', 'success');
+          onAddItem(addedItem);
+        }
       }
 
-      onAddItem(addedItem);
       setNewItem({
         name: '',
         upc: '',
@@ -72,11 +151,11 @@ const AddItemForm = ({ onAddItem }) => {
         manufactureDate: '',
         expiryDate: '',
       });
+      setExistingProduct(null);
       setError(null);
-      showToast('Item added successfully!', 'success');
     } catch (err) {
-      setError(err.message);
-      showToast(err.message, 'error');
+      setError(err.message || 'Something went wrong');
+      showToast(err.message || 'Error!', 'error');
     } finally {
       setLoading(false);
     }
@@ -110,34 +189,40 @@ const AddItemForm = ({ onAddItem }) => {
           <input
             type='text'
             value={newItem.upc}
-            onChange={(e) => setNewItem({ ...newItem, upc: e.target.value })}
-            className='p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
-            required
-          />
-          
-          <label className='font-medium text-gray-700 dark:text-gray-200'>
-            Name:
-          </label>
-          <input
-            type='text'
-            value={newItem.name}
-            onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+            onChange={handleSearchUPC}
             className='p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
             required
           />
 
-          <label className='font-medium text-gray-700 dark:text-gray-200'>
-            Quantity:
-          </label>
-          <input
-            type='number'
-            value={newItem.quantity}
-            onChange={(e) =>
-              setNewItem({ ...newItem, quantity: e.target.value })
-            }
-            className='p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
-            required
-          />
+          {existingProduct && (
+            <>
+              <label className='font-medium text-gray-700 dark:text-gray-200'>
+                Name:
+              </label>
+              <input
+                type='text'
+                value={newItem.name}
+                onChange={(e) =>
+                  setNewItem({ ...newItem, name: e.target.value })
+                }
+                className='p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
+                required
+              />
+
+              <label className='font-medium text-gray-700 dark:text-gray-200'>
+                Quantity:
+              </label>
+              <input
+                type='number'
+                value={newItem.quantity}
+                onChange={(e) =>
+                  setNewItem({ ...newItem, quantity: e.target.value })
+                }
+                className='p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
+                required
+              />
+            </>
+          )}
 
           <label className='font-medium text-gray-700 dark:text-gray-200'>
             Wholesale Price:

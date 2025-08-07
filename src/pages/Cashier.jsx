@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Minus, Trash } from 'lucide-react';
 
 import SearchBar from '../components/cashier/SearchBar';
 import PredefinedPriceButtons from '../components/cashier/PredefinedPriceButtons';
