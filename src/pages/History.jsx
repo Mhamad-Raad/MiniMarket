@@ -79,7 +79,6 @@ const TransactionHistory = () => {
         setSearchTerm={setSearchTerm}
         filterDate={filterDate}
         setFilterDate={setFilterDate}
-        onFilter={() => setFilteredTransactions(filteredTransactions)}
         onReset={resetFilters}
         t={t}
       />

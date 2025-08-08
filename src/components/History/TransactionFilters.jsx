@@ -1,11 +1,8 @@
-import { FileClock } from 'lucide-react';
-
 const TransactionFilters = ({
   searchTerm,
   setSearchTerm,
   filterDate,
   setFilterDate,
-  onFilter,
   onReset,
   t,
 }) => {
@@ -24,12 +21,7 @@ const TransactionFilters = ({
         onChange={(e) => setFilterDate(e.target.value)}
         className='p-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary'
       />
-      <button
-        onClick={onFilter}
-        className='px-6 py-2 bg-primary text-white rounded-lg hover:bg-blue-700'
-      >
-        <FileClock /> {t('filterByDate')}
-      </button>
+
       <button
         onClick={onReset}
         className='px-6 py-2 bg-red text-white rounded-lg'
