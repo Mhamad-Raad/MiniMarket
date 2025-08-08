@@ -1,3 +1,5 @@
+import { FileClock } from 'lucide-react';
+
 const WarehouseNav = ({
   selectedPage,
   handlePageChange,
@@ -5,6 +7,7 @@ const WarehouseNav = ({
   setSearchTerm,
   filterDate,
   setFilterDate,
+  onReset, // Add onReset prop
 }) => {
   return (
     <div className='flex items-center justify-between gap-4 mb-6'>
@@ -42,6 +45,12 @@ const WarehouseNav = ({
           onChange={(e) => setFilterDate(e.target.value)}
           className='p-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-600'
         />
+        <button
+          onClick={onReset}
+          className='px-6 py-2 bg-red text-white rounded-lg'
+        >
+          Reset Filters
+        </button>
       </div>
     </div>
   );

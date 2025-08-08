@@ -7,6 +7,7 @@ import { getProducts, updateItem, deleteItem } from '../utils/FetchData';
 
 const Warehouse = () => {
   const [items, setItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedPage, setSelectedPage] = useState(0);
@@ -16,12 +17,14 @@ const Warehouse = () => {
   const [currentItem, setCurrentItem] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
 
+  // Fetching products on component mount
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
         const products = await getProducts();
         setItems(products);
+        setFilteredItems(products); // Initialize filteredItems with all products
       } catch (error) {
         setError(error.message);
         console.error('Error:', error);
@@ -33,19 +36,31 @@ const Warehouse = () => {
     fetchProducts();
   }, []);
 
+  // Filter items by searchTerm and filterDate
   const filterItems = () => {
-    return items.filter((item) => {
-      const matchesName = item.name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-      const matchesUPC = item.upc.includes(searchTerm);
-      const matchesDate =
-        filterDate &&
-        (item.manufactureDate.includes(filterDate) ||
-          item.expiryDate.includes(filterDate));
-      return matchesName || matchesUPC || matchesDate;
-    });
+    // Filter items by searchTerm first (search by name or UPC)
+    let filtered = items.filter(
+      (item) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.upc.includes(searchTerm)
+    );
+
+    // If filterDate is set, filter items by the manufacture or expiry date
+    if (filterDate) {
+      filtered = filtered.filter(
+        (item) =>
+          item.manufactureDate.includes(filterDate) ||
+          item.expiryDate.includes(filterDate)
+      );
+    }
+
+    return filtered;
   };
+
+  useEffect(() => {
+    const filtered = filterItems(); // Apply both search and date filters
+    setFilteredItems(filtered); // Set filtered items after applying filters
+  }, [searchTerm, filterDate, items]);
 
   const handlePageChange = (page) => {
     setSelectedPage(page);
@@ -79,7 +94,6 @@ const Warehouse = () => {
   };
 
   const handleDelete = async () => {
-    console.log('Deleting item:', items);
     try {
       setActionLoading(true);
       await deleteItem(currentItem.docId);
@@ -96,6 +110,13 @@ const Warehouse = () => {
     }
   };
 
+  // Reset the filters
+  const resetFilters = () => {
+    setSearchTerm('');
+    setFilterDate('');
+    setFilteredItems(items); // Reset the filtered items to the original items
+  };
+
   return (
     <div>
       <WarehouseNav
@@ -105,6 +126,7 @@ const Warehouse = () => {
         setSearchTerm={setSearchTerm}
         filterDate={filterDate}
         setFilterDate={setFilterDate}
+        onReset={resetFilters} // Pass the reset function to the WarehouseNav component
       />
 
       {error && (
@@ -115,7 +137,7 @@ const Warehouse = () => {
 
       {selectedPage === 0 && (
         <ProductsTable
-          items={filterItems()}
+          items={filteredItems}
           openModal={openModal}
           loading={loading}
         />
