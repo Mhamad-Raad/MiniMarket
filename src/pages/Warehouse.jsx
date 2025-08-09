@@ -17,14 +17,13 @@ const Warehouse = () => {
   const [currentItem, setCurrentItem] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
 
-  // Fetching products on component mount
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
         const products = await getProducts();
         setItems(products);
-        setFilteredItems(products); // Initialize filteredItems with all products
+        setFilteredItems(products);
       } catch (error) {
         setError(error.message);
         console.error('Error:', error);
@@ -36,16 +35,13 @@ const Warehouse = () => {
     fetchProducts();
   }, []);
 
-  // Filter items by searchTerm and filterDate
   const filterItems = () => {
-    // Filter items by searchTerm first (search by name or UPC)
     let filtered = items.filter(
       (item) =>
         item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.upc.includes(searchTerm)
     );
 
-    // If filterDate is set, filter items by the manufacture or expiry date
     if (filterDate) {
       filtered = filtered.filter(
         (item) =>
@@ -58,8 +54,8 @@ const Warehouse = () => {
   };
 
   useEffect(() => {
-    const filtered = filterItems(); // Apply both search and date filters
-    setFilteredItems(filtered); // Set filtered items after applying filters
+    const filtered = filterItems();
+    setFilteredItems(filtered);
   }, [searchTerm, filterDate, items]);
 
   const handlePageChange = (page) => {
@@ -110,11 +106,10 @@ const Warehouse = () => {
     }
   };
 
-  // Reset the filters
   const resetFilters = () => {
     setSearchTerm('');
     setFilterDate('');
-    setFilteredItems(items); // Reset the filtered items to the original items
+    setFilteredItems(items);
   };
 
   return (
@@ -126,7 +121,7 @@ const Warehouse = () => {
         setSearchTerm={setSearchTerm}
         filterDate={filterDate}
         setFilterDate={setFilterDate}
-        onReset={resetFilters} // Pass the reset function to the WarehouseNav component
+        onReset={resetFilters}
       />
 
       {error && (

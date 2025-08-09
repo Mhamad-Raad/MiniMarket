@@ -1,21 +1,114 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ResponsiveBar } from '@nivo/bar';
+import { fetchHistory } from '../../utils/FetchData';
 
 const Analytics = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('today');
+  const [salesData, setSalesData] = useState({
+    today: 0,
+    week: 0,
+    month: 0,
+    year: 0,
+  });
+  const [profitData, setProfitData] = useState({
+    today: 0,
+    week: 0,
+    month: 0,
+    year: 0,
+  });
+  const [totalProfit, setTotalProfit] = useState(0);
+  const [monthlyCharts, setMonthlyCharts] = useState([]);
+  const [historyData, setHistoryData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  let monthlySales = new Array(12).fill(0);
 
-  const salesData = {
-    today: 5000,
-    week: 30000,
-    month: 120000,
-    year: 1500000,
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const fetchedHistory = await fetchHistory();
+        setHistoryData(fetchedHistory);
+
+        const salesByPeriod = {
+          today: 0,
+          week: 0,
+          month: 0,
+          year: 0,
+        };
+
+        const profitByPeriod = {
+          today: 0,
+          week: 0,
+          month: 0,
+          year: 0,
+        };
+
+        let totalProfitAmount = 0;
+
+        monthlySales = new Array(12).fill(0);
+
+        fetchedHistory.forEach((transaction) => {
+          const saleAmount = transaction.total;
+          const productDate = new Date(transaction.saleDate);
+
+          if (isToday(productDate)) salesByPeriod.today += saleAmount;
+          if (isThisWeek(productDate)) salesByPeriod.week += saleAmount;
+          if (isThisMonth(productDate)) salesByPeriod.month += saleAmount;
+          if (isThisYear(productDate)) salesByPeriod.year += saleAmount;
+
+          if (isToday(productDate)) profitByPeriod.today += saleAmount;
+          if (isThisWeek(productDate)) profitByPeriod.week += saleAmount;
+          if (isThisMonth(productDate)) profitByPeriod.month += saleAmount;
+          if (isThisYear(productDate)) profitByPeriod.year += saleAmount;
+
+          totalProfitAmount += saleAmount;
+
+          const monthIndex = productDate.getMonth();
+          monthlySales[monthIndex] += saleAmount;
+        });
+
+        setSalesData(salesByPeriod);
+        setProfitData(profitByPeriod);
+        setTotalProfit(totalProfitAmount);
+        setMonthlyCharts(monthlySales);
+
+        console.log('Monthly Sales Data:', monthlySales);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const isToday = (date) => {
+    const today = new Date();
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
   };
 
-  const profitData = {
-    today: 2000,
-    week: 12000,
-    month: 48000,
-    year: 600000,
+  const isThisWeek = (date) => {
+    const today = new Date();
+    const startOfWeek = today.getDate() - today.getDay();
+    const endOfWeek = startOfWeek + 6;
+    const dateOfYear = date.getDate();
+    return dateOfYear >= startOfWeek && dateOfYear <= endOfWeek;
+  };
+
+  const isThisMonth = (date) => {
+    const today = new Date();
+    return (
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  };
+
+  const isThisYear = (date) => {
+    const today = new Date();
+    return date.getFullYear() === today.getFullYear();
   };
 
   return (
@@ -33,7 +126,7 @@ const Analytics = () => {
             <div className='text-lg'>
               <p>Total Profit:</p>
               <p className='text-2xl font-bold'>
-                ${profitData[selectedPeriod].toLocaleString()}
+                ${totalProfit.toLocaleString()}
               </p>
             </div>
           </div>
@@ -63,24 +156,24 @@ const Analytics = () => {
         </div>
 
         <div className='bg-white dark:bg-gray-800 p-6 rounded-lg shadow'>
-          <h3 className='text-2xl font-semibold mb-4'>Monthly Profit</h3>
+          <h3 className='text-2xl font-semibold mb-4'>Monthly Sales</h3>
           <div style={{ height: '300px' }}>
             <ResponsiveBar
-              data={[
-                { month: 'Jan', profit: 3000 },
-                { month: 'Feb', profit: 4500 },
-                { month: 'Mar', profit: 5200 },
-                { month: 'Apr', profit: 6100 },
-                { month: 'May', profit: 7200 },
-                { month: 'Jun', profit: 5000 },
-                { month: 'Jul', profit: 6500 },
-                { month: 'Aug', profit: 7000 },
-                { month: 'Sep', profit: 5300 },
-                { month: 'Oct', profit: 4800 },
-                { month: 'Nov', profit: 5600 },
-                { month: 'Dec', profit: 6800 },
-              ]}
-              keys={['profit']}
+              data={monthlyCharts.map((salesAmount, index) => {
+                console.log(
+                  'Processing month:',
+                  index + 1,
+                  'Sales:',
+                  salesAmount
+                );
+                return {
+                  month: new Date(0, index).toLocaleString('en', {
+                    month: 'short',
+                  }),
+                  sales: salesAmount,
+                };
+              })}
+              keys={['sales']}
               indexBy='month'
               margin={{ top: 30, right: 30, bottom: 50, left: 60 }}
               padding={0.3}
@@ -98,7 +191,7 @@ const Analytics = () => {
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
-                legend: 'Profit ($)',
+                legend: 'Sales ($)',
                 legendOffset: -40,
                 legendPosition: 'middle',
               }}
@@ -126,7 +219,7 @@ const Analytics = () => {
               labelSkipWidth={12}
               labelSkipHeight={12}
               role='application'
-              ariaLabel='Monthly profit chart'
+              ariaLabel='Monthly sales chart'
             />
           </div>
         </div>
