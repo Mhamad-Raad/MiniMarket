@@ -4,12 +4,12 @@ import { getAuth } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDoncNAwJgjEIJ3iKQt5ULsX1RAGbtShDw',
-  authDomain: 'mini-market-ccd1b.firebaseapp.com',
-  projectId: 'mini-market-ccd1b',
-  messagingSenderId: '974362851117',
-  appId: '1:974362851117:web:d6af5def2b8088463285a4',
-  measurementId: 'G-41JTPLPZKG',
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = initializeApp(firebaseConfig);
