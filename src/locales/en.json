@@ -56,5 +56,8 @@
   "Users": "Users",
   "newsNotifications": "News / Notifications",
   "userManagement": "User Management",
-  "userList": "User List"
+  "userList": "User List",
+  "products": "Products",
+  "totalSales": "Total Sales",
+  "totalProfit": "Total Profit"
 }

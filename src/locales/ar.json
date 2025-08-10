@@ -56,5 +56,8 @@
   "Users": "المستخدمون",
   "newsNotifications": "الأخبار والإشعارات",
   "userManagement": "إدارة المستخدمين",
-  "userList": "قائمة المستخدمين"
+  "userList": "قائمة المستخدمين",
+  "products": "المنتجات",
+  "totalSales": "إجمالي المبيعات",
+  "totalProfit": "إجمالي الأرباح"
 }
