@@ -96,6 +96,7 @@ const AdminDashboard = () => {
               {isLoading ? t('loggingIn') : t('login')}
             </button>
           </form>
+          <p>User Name: Admin - Password: 123</p>
         </div>
       ) : (
         <>
