@@ -28,3 +28,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>
 );
 
+// add translation support 
+// deploy the project
+

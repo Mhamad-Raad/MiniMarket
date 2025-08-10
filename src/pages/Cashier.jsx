@@ -11,8 +11,8 @@ import { addHistory, processRefund, getProducts } from '../utils/FetchData';
 const Cashier = () => {
   const { t } = useTranslation();
 
-  const [products, setProducts] = useState([]); // To store the available products (from Firestore)
-  const [cart, setCart] = useState([]); // Empty cart initially
+  const [products, setProducts] = useState([]);
+  const [cart, setCart] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isReceipt, setIsReceipt] = useState(false);
   const [suggestedProducts, setSuggestedProducts] = useState([]);
@@ -23,10 +23,10 @@ const Cashier = () => {
     const fetchProducts = async () => {
       try {
         const fetchedProducts = await getProducts();
-        setProducts(fetchedProducts); // Set fetched products as available products
+        setProducts(fetchedProducts);
       } catch (err) {
         console.error('Error fetching products:', err);
-        setError('Failed to load products.');
+        setError(t('failedToLoadProducts'));
       } finally {
         setLoading(false);
       }
@@ -90,11 +90,9 @@ const Cashier = () => {
   const addProductByUPC = (upc) => {
     const foundProduct = products.find((product) => product.upc === upc);
     if (foundProduct) {
-      // Check if the product is already in the cart
       const productInCart = cart.find((product) => product.upc === upc);
 
       if (productInCart) {
-        // If the product is already in the cart, increase its quantity
         const updatedCart = cart.map((product) =>
           product.upc === upc
             ? { ...product, quantity: product.quantity + 1 }
@@ -102,19 +100,17 @@ const Cashier = () => {
         );
         setCart(updatedCart);
       } else {
-        // Otherwise, add it to the cart with quantity 1
         const updatedCart = [...cart, { ...foundProduct, quantity: 1 }];
         setCart(updatedCart);
       }
     }
 
-    // Reset the search term and clear suggestions after adding a product
     setSearchTerm('');
     setSuggestedProducts([]);
   };
 
   const resetCartHandler = () => {
-    setCart([]); // Reset the cart
+    setCart([]);
   };
 
   const removeItem = (index) => {
@@ -150,7 +146,7 @@ const Cashier = () => {
         printReceipt(receipt);
       }
 
-      setCart([]); // Empty cart after sale
+      setCart([]);
       setIsReceipt(false);
 
       alert(t('saleComplete'));
@@ -164,13 +160,13 @@ const Cashier = () => {
     try {
       await processRefund(cart);
       alert(t('refundComplete'));
-      setCart([]); // Empty cart after refund
+      setCart([]);
     } catch {
       alert(t('refundError'));
     }
   };
 
-  if (loading) return <p>Loading products...</p>;
+  if (loading) return <p>{t('loadingProducts')}</p>;
   if (error) return <p>{error}</p>;
 
   return (
@@ -183,7 +179,6 @@ const Cashier = () => {
           handleSearchChange={handleSearchChange}
         />
 
-        {/* Suggested Products (appears if partial match found) */}
         {searchTerm && suggestedProducts.length > 0 && (
           <div className='absolute mt-12 w-full max-h-[140px] overflow-y-scroll bg-white shadow-lg dark:bg-gray-800 dark:shadow-blue-400 rounded-md top-[10px] z-10 '>
             <ul>

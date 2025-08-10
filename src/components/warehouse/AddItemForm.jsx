@@ -38,14 +38,14 @@ const AddItemForm = ({ onAddItem }) => {
     for (const [key, value] of Object.entries(newItem)) {
       if (typeof value === 'string' && !value.trim()) {
         setError(
-          `${key.charAt(0).toUpperCase() + key.slice(1)} cannot be empty`
+          `${key.charAt(0).toUpperCase() + key.slice(1)} ${t('cannotBeEmpty')}`
         );
         return false;
       }
 
       if (!value || value === '') {
         setError(
-          `${key.charAt(0).toUpperCase() + key.slice(1)} cannot be empty`
+          `${key.charAt(0).toUpperCase() + key.slice(1)} ${t('cannotBeEmpty')}`
         );
         return false;
       }
@@ -80,7 +80,7 @@ const AddItemForm = ({ onAddItem }) => {
       }
     } catch (err) {
       console.error('Error fetching product:', err);
-      setError('Failed to fetch product details');
+      setError(t('failedToFetchProductDetails'));
     }
   };
 
@@ -91,7 +91,7 @@ const AddItemForm = ({ onAddItem }) => {
         setAllProducts(fetchedProducts);
       } catch (err) {
         console.error('Error fetching products:', err);
-        setError('Failed to load products.');
+        setError(t('failedToLoadProducts'));
       }
     };
 
@@ -121,7 +121,7 @@ const AddItemForm = ({ onAddItem }) => {
         );
 
         if (updatedProduct) {
-          showToast('Product updated successfully!', 'success');
+          showToast(t('productUpdatedSuccessfully'), 'success');
           onAddItem(updatedProduct);
         }
       } else {
@@ -135,7 +135,7 @@ const AddItemForm = ({ onAddItem }) => {
 
         const addedItem = await addNewItem(itemWithId);
         if (addedItem) {
-          showToast('Item added successfully!', 'success');
+          showToast(t('itemAddedSuccessfully'), 'success');
           onAddItem(addedItem);
         }
       }
@@ -152,8 +152,8 @@ const AddItemForm = ({ onAddItem }) => {
       setExistingProduct(null);
       setError(null);
     } catch (err) {
-      setError(err.message || 'Something went wrong');
-      showToast(err.message || 'Error!', 'error');
+      setError(err.message || t('somethingWentWrong'));
+      showToast(err.message || t('error'), 'error');
     } finally {
       setLoading(false);
     }
@@ -171,7 +171,9 @@ const AddItemForm = ({ onAddItem }) => {
         />
       )}
 
-      <h3 className='text-xl font-bold mb-6 dark:text-white'>Add New Item</h3>
+      <h3 className='text-xl font-bold mb-6 dark:text-white'>
+        {t('addNewItem')}
+      </h3>
 
       {error && (
         <div className='w-full max-w-2xl mb-4 p-3 rounded-lg bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 text-sm'>
@@ -182,7 +184,7 @@ const AddItemForm = ({ onAddItem }) => {
       <form onSubmit={handleSubmit} className='w-full max-w-2xl space-y-4'>
         <div className='grid grid-cols-[200px_1fr] gap-4 items-center'>
           <label className='font-medium text-gray-700 dark:text-gray-200'>
-            UPC:
+            {t('upc')}:
           </label>
           <input
             type='text'
@@ -193,7 +195,7 @@ const AddItemForm = ({ onAddItem }) => {
           />
 
           <label className='font-medium text-gray-700 dark:text-gray-200'>
-            Name:
+            {t('name')}:
           </label>
           <input
             type='text'
@@ -204,7 +206,7 @@ const AddItemForm = ({ onAddItem }) => {
           />
 
           <label className='font-medium text-gray-700 dark:text-gray-200'>
-            Quantity:
+            {t('quantity')}:
           </label>
           <input
             type='number'
@@ -217,7 +219,7 @@ const AddItemForm = ({ onAddItem }) => {
           />
 
           <label className='font-medium text-gray-700 dark:text-gray-200'>
-            Wholesale Price:
+            {t('wholesalePrice')}:
           </label>
           <input
             type='number'
@@ -231,7 +233,7 @@ const AddItemForm = ({ onAddItem }) => {
           />
 
           <label className='font-medium text-gray-700 dark:text-gray-200'>
-            Sale Price:
+            {t('salePrice')}:
           </label>
           <input
             type='number'
@@ -245,7 +247,7 @@ const AddItemForm = ({ onAddItem }) => {
           />
 
           <label className='font-medium text-gray-700 dark:text-gray-200'>
-            Manufacture Date:
+            {t('manufactureDate')}:
           </label>
           <input
             type='date'
@@ -258,7 +260,7 @@ const AddItemForm = ({ onAddItem }) => {
           />
 
           <label className='font-medium text-gray-700 dark:text-gray-200'>
-            Expiry Date:
+            {t('expiryDate')}:
           </label>
           <input
             type='date'
@@ -296,10 +298,10 @@ const AddItemForm = ({ onAddItem }) => {
                     d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
                   />
                 </svg>
-                Adding...
+                {t('adding')}
               </>
             ) : (
-              'Add Item'
+              t('addItem')
             )}
           </button>
         </div>

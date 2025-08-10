@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 const ProductModal = ({
   currentItem,
   setCurrentItem,
@@ -6,6 +8,8 @@ const ProductModal = ({
   closeModal,
   loading,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div
       className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50'
@@ -23,7 +27,7 @@ const ProductModal = ({
           &times;
         </button>
         <h3 className='text-2xl font-bold mb-6 text-center text-blue-600 dark:text-blue-400'>
-          Update Product
+          {t('updateProduct')}
         </h3>
         <form>
           <div className='mb-4'>
@@ -31,7 +35,7 @@ const ProductModal = ({
               htmlFor='name'
               className='block font-semibold mb-1 dark:text-gray-200'
             >
-              Name
+              {t('name')}
             </label>
             <input
               id='name'
@@ -49,7 +53,7 @@ const ProductModal = ({
               htmlFor='upc'
               className='block font-semibold mb-1 dark:text-gray-200'
             >
-              UPC
+              {t('upc')}
             </label>
             <input
               id='upc'
@@ -67,7 +71,7 @@ const ProductModal = ({
               htmlFor='quantity'
               className='block font-semibold mb-1 dark:text-gray-200'
             >
-              Quantity
+              {t('quantity')}
             </label>
             <input
               id='quantity'
@@ -85,7 +89,7 @@ const ProductModal = ({
               htmlFor='wholesalePrice'
               className='block font-semibold mb-1 dark:text-gray-200'
             >
-              Wholesale Price
+              {t('wholesalePrice')}
             </label>
             <input
               id='wholesalePrice'
@@ -107,7 +111,7 @@ const ProductModal = ({
               htmlFor='salePrice'
               className='block font-semibold mb-1 dark:text-gray-200'
             >
-              Sale Price
+              {t('salePrice')}
             </label>
             <input
               id='salePrice'
@@ -126,7 +130,7 @@ const ProductModal = ({
               htmlFor='expiryDate'
               className='block font-semibold mb-1 dark:text-gray-200'
             >
-              Expiry Date
+              {t('expiryDate')}
             </label>
             <input
               id='expiryDate'
@@ -146,7 +150,7 @@ const ProductModal = ({
               disabled={loading}
               className='bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-semibold transition disabled:opacity-50'
             >
-              {loading ? 'Updating...' : 'Update Product'}
+              {loading ? t('updating') : t('updateProduct')}
             </button>
             <button
               type='button'
@@ -154,7 +158,7 @@ const ProductModal = ({
               disabled={loading}
               className='bg-red text-white px-4 py-2 rounded-md font-semibold transition disabled:opacity-50'
             >
-              {loading ? 'Deleting...' : 'Delete Product'}
+              {loading ? t('deleting') : t('deleteProduct')}
             </button>
             <button
               type='button'
@@ -162,7 +166,7 @@ const ProductModal = ({
               disabled={loading}
               className='bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md font-semibold transition dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100 disabled:opacity-50'
             >
-              Cancel
+              {t('cancel')}
             </button>
           </div>
         </form>

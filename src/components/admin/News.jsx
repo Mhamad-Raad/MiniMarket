@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { fetchNews } from '../../utils/FetchData';
 
 const News = () => {
+  const { t } = useTranslation();
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,7 +15,7 @@ const News = () => {
         const fetchedNews = await fetchNews();
         setNews(fetchedNews);
       } catch (err) {
-        setError('Failed to load news.');
+        setError(t('failedToLoadNews'));
         console.error('Error fetching news:', err);
       } finally {
         setLoading(false);
@@ -26,7 +28,7 @@ const News = () => {
   if (loading) {
     return (
       <div className='text-center py-20 text-lg font-bold text-gray-600 dark:text-gray-300'>
-        Loading news...
+        {t('loadingNews')}
       </div>
     );
   }
@@ -41,7 +43,7 @@ const News = () => {
 
   return (
     <section>
-      <h2 className='text-3xl font-bold mb-6'>News / Notifications</h2>
+      <h2 className='text-3xl font-bold mb-6'>{t('newsNotifications')}</h2>{' '}
       <div className='space-y-4'>
         {news.map((newsItem) => (
           <div

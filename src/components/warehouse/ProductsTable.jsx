@@ -1,4 +1,8 @@
+import { useTranslation } from 'react-i18next';
+
 const ProductsTable = ({ items, openModal, loading }) => {
+  const { t } = useTranslation();
+
   if (loading) {
     return (
       <div className='flex justify-center items-center h-64'>
@@ -10,7 +14,7 @@ const ProductsTable = ({ items, openModal, loading }) => {
   if (!items?.length) {
     return (
       <div className='text-center py-8 text-gray-600 dark:text-gray-400'>
-        No products found
+        {t('noProductsFound')}
       </div>
     );
   }
@@ -20,13 +24,13 @@ const ProductsTable = ({ items, openModal, loading }) => {
       <table className='min-w-full'>
         <thead className='bg-gray-100 dark:bg-gray-700 sticky top-0 z-10'>
           <tr>
-            <th className='px-4 py-2 text-left'>Name</th>
-            <th className='px-4 py-2 text-left'>UPC</th>
-            <th className='px-4 py-2 text-left'>Manufacture Date</th>
-            <th className='px-4 py-2 text-left'>Expiry Date</th>
-            <th className='px-4 py-2 text-left'>Quantity</th>
-            <th className='px-4 py-2 text-left'>Wholesale Price</th>
-            <th className='px-4 py-2 text-left'>Sale Price</th>
+            <th className='px-4 py-2 text-left'>{t('name')}</th>
+            <th className='px-4 py-2 text-left'>{t('upc')}</th>
+            <th className='px-4 py-2 text-left'>{t('manufactureDate')}</th>
+            <th className='px-4 py-2 text-left'>{t('expiryDate')}</th>
+            <th className='px-4 py-2 text-left'>{t('quantity')}</th>
+            <th className='px-4 py-2 text-left'>{t('wholesalePrice')}</th>
+            <th className='px-4 py-2 text-left'>{t('salePrice')}</th>
           </tr>
         </thead>
         <tbody>

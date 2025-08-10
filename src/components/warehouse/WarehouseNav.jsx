@@ -1,4 +1,5 @@
 import { FileClock } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const WarehouseNav = ({
   selectedPage,
@@ -9,6 +10,8 @@ const WarehouseNav = ({
   setFilterDate,
   onReset, // Add onReset prop
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className='flex items-center justify-between gap-4 mb-6'>
       <div className='flex items-center border-2 border-gray-300 dark:border-blue-600 rounded-xl font-bold'>
@@ -18,7 +21,7 @@ const WarehouseNav = ({
             selectedPage === 0 && 'bg-blue-500 text-white'
           }`}
         >
-          Products
+          {t('products')}
         </button>
         <div className='h-12 w-1 bg-secondary dark:bg-blue-500'></div>
         <button
@@ -27,7 +30,7 @@ const WarehouseNav = ({
             selectedPage === 1 && 'bg-blue-500 text-white'
           }`}
         >
-          Add Item
+          {t('addItem')}
         </button>
       </div>
 
@@ -37,7 +40,7 @@ const WarehouseNav = ({
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className='w-full p-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-600'
-          placeholder='Search by Name or UPC'
+          placeholder={t('searchByNameOrUPC')}
         />
         <input
           type='date'
@@ -49,7 +52,7 @@ const WarehouseNav = ({
           onClick={onReset}
           className='px-6 py-2 bg-red text-white rounded-lg'
         >
-          Reset Filters
+          {t('resetFilters')}
         </button>
       </div>
     </div>

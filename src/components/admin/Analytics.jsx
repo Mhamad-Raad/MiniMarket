@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { ResponsiveBar } from '@nivo/bar';
+import { useTranslation } from 'react-i18next'; // Importing the useTranslation hook
 import { fetchHistory } from '../../utils/FetchData';
 
 const Analytics = () => {
+  const { t } = useTranslation();
   const [selectedPeriod, setSelectedPeriod] = useState('today');
   const [salesData, setSalesData] = useState({
     today: 0,
@@ -71,8 +73,6 @@ const Analytics = () => {
         setProfitData(profitByPeriod);
         setTotalProfit(totalProfitAmount);
         setMonthlyCharts(monthlySales);
-
-        console.log('Monthly Sales Data:', monthlySales);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -113,18 +113,18 @@ const Analytics = () => {
 
   return (
     <section>
-      <h2 className='text-3xl font-bold mb-6'>Sales Overview</h2>
+      <h2 className='text-3xl font-bold mb-6'>{t('salesOverview')}</h2>
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
         <div className='bg-white dark:bg-gray-800 p-6 rounded-lg shadow flex flex-col justify-between'>
           <div className='space-y-4'>
             <div className='text-lg'>
-              <p>Total Sales:</p>
+              <p>{t('totalSales')}:</p>
               <p className='text-2xl font-bold'>
                 ${salesData[selectedPeriod].toLocaleString()}
               </p>
             </div>
             <div className='text-lg'>
-              <p>Total Profit:</p>
+              <p>{t('totalProfit')}:</p>
               <p className='text-2xl font-bold'>
                 ${totalProfit.toLocaleString()}
               </p>
@@ -132,7 +132,7 @@ const Analytics = () => {
           </div>
           <div className='mt-6'>
             <p className='mb-2 text-sm font-medium text-gray-700 dark:text-gray-300'>
-              Filter by Period:
+              {t('filterByPeriod')}:
             </p>
             <div className='flex gap-2 flex-wrap'>
               {['today', 'week', 'month', 'year'].map((period) => (
@@ -145,10 +145,7 @@ const Analytics = () => {
                       : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white'
                   }`}
                 >
-                  {period === 'today' && 'Today'}
-                  {period === 'week' && 'This Week'}
-                  {period === 'month' && 'This Month'}
-                  {period === 'year' && 'This Year'}
+                  {t(period)}
                 </button>
               ))}
             </div>
@@ -156,16 +153,10 @@ const Analytics = () => {
         </div>
 
         <div className='bg-white dark:bg-gray-800 p-6 rounded-lg shadow'>
-          <h3 className='text-2xl font-semibold mb-4'>Monthly Sales</h3>
+          <h3 className='text-2xl font-semibold mb-4'>{t('monthlySales')}</h3>
           <div style={{ height: '300px' }}>
             <ResponsiveBar
               data={monthlyCharts.map((salesAmount, index) => {
-                console.log(
-                  'Processing month:',
-                  index + 1,
-                  'Sales:',
-                  salesAmount
-                );
                 return {
                   month: new Date(0, index).toLocaleString('en', {
                     month: 'short',
@@ -183,7 +174,7 @@ const Analytics = () => {
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
-                legend: 'Month',
+                legend: t('month'),
                 legendOffset: 36,
                 legendPosition: 'middle',
               }}
@@ -191,7 +182,7 @@ const Analytics = () => {
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
-                legend: 'Sales ($)',
+                legend: t('salesAmount'),
                 legendOffset: -40,
                 legendPosition: 'middle',
               }}

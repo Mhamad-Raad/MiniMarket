@@ -4,8 +4,10 @@ import Analytics from '../components/admin/Analytics';
 import News from '../components/admin/News';
 import UserManagement from '../components/admin/UserManagement';
 import { fetchUsers } from '../utils/FetchData';
+import { useTranslation } from 'react-i18next';
 
 const AdminDashboard = () => {
+  const { t } = useTranslation();
   const [selectedPage, setSelectedPage] = useState('analytics');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginData, setLoginData] = useState({ username: '', password: '' });
@@ -29,7 +31,7 @@ const AdminDashboard = () => {
         setIsLoggedIn(true);
         setIsLoading(false);
       } else {
-        throw new Error('Invalid credentials or insufficient permissions');
+        throw new Error(t('invalidCredentialsOrPermissions'));
       }
     } catch (error) {
       setError(error.message);
@@ -48,7 +50,7 @@ const AdminDashboard = () => {
       {!isLoggedIn ? (
         <div className='w-[500px] bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md mx-auto border border-gray-200 dark:border-gray-700'>
           <h2 className='text-3xl font-bold mb-4 text-gray-900 dark:text-white'>
-            Admin Login
+            {t('adminLogin')}
           </h2>
           {error && (
             <div className='p-3 mb-4 text-sm text-red-500 bg-red-100 dark:bg-red-900 dark:text-red-200 rounded'>
@@ -67,7 +69,7 @@ const AdminDashboard = () => {
                 text-gray-900 dark:text-white
                 placeholder-gray-500 dark:placeholder-gray-400
                 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent'
-              placeholder='Username'
+              placeholder={t('username')}
               disabled={isLoading}
             />
             <input
@@ -81,7 +83,7 @@ const AdminDashboard = () => {
                 text-gray-900 dark:text-white
                 placeholder-gray-500 dark:placeholder-gray-400
                 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent'
-              placeholder='Password'
+              placeholder={t('password')}
               disabled={isLoading}
             />
             <button
@@ -91,7 +93,7 @@ const AdminDashboard = () => {
                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800'
               disabled={isLoading}
             >
-              {isLoading ? 'Logging in...' : 'Login'}
+              {isLoading ? t('loggingIn') : t('login')}
             </button>
           </form>
         </div>

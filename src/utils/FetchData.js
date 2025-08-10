@@ -11,14 +11,12 @@ import {
 } from 'firebase/firestore';
 
 export const fetchUsers = async () => {
-  console.log('Fetching users...');
   try {
     const querySnapshot = await getDocs(collection(db, 'users'));
     const usersList = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
-    console.log('Fetched users:', usersList);
     return usersList;
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -29,7 +27,6 @@ export const fetchUsers = async () => {
 export const addNewItem = async (item) => {
   try {
     const docRef = await addDoc(collection(db, 'items'), item);
-    console.log('New item added with ID:', docRef.id);
 
     const newsData = {
       action: 'Added Item',
@@ -54,7 +51,6 @@ export const getProducts = async () => {
         ...doc.data(),
       };
     });
-    console.log('Fetched products:', productsList);
     return productsList;
   } catch (error) {
     console.error('Error fetching products:', error);
@@ -103,7 +99,6 @@ export const deleteItem = async (docId) => {
 export const addHistory = async (historyData) => {
   try {
     const docRef = await addDoc(collection(db, 'history'), historyData);
-    console.log('History entry added with ID:', docRef.id);
     return { id: docRef.id, ...historyData };
   } catch (error) {
     console.error('Error adding history entry:', error);
@@ -118,7 +113,6 @@ export const fetchHistory = async () => {
       id: doc.id,
       ...doc.data(),
     }));
-    console.log('Fetched history:', historyList);
     return historyList;
   } catch (error) {
     console.error('Error fetching history:', error);
@@ -129,7 +123,6 @@ export const fetchHistory = async () => {
 export const addNews = async (newsData) => {
   try {
     const docRef = await addDoc(collection(db, 'news'), newsData);
-    console.log('News added with ID:', docRef.id);
     return { id: docRef.id, ...newsData };
   } catch (error) {
     console.error('Error adding news:', error);
@@ -144,7 +137,6 @@ export const fetchNews = async () => {
       id: doc.id,
       ...doc.data(),
     }));
-    console.log('Fetched news:', newsList);
     return newsList;
   } catch (error) {
     console.error('Error fetching news:', error);
@@ -160,7 +152,6 @@ export const processRefund = async (refundedItems) => {
     };
 
     const docRef = await addDoc(collection(db, 'refunds'), refundRecord);
-    console.log('Refund record added with ID:', docRef.id);
 
     for (const item of refundedItems) {
       const q = query(collection(db, 'items'), where('upc', '==', item.upc));
@@ -177,7 +168,6 @@ export const processRefund = async (refundedItems) => {
           quantity: newQuantity,
         });
 
-        console.log(`Restored quantity for ${item.name}: now ${newQuantity}`);
       } else {
         console.warn(`Item with UPC ${item.upc} not found in database.`);
       }

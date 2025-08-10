@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next'; // Importing the useTranslation hook
 import {
   collection,
   getDocs,
@@ -10,6 +11,7 @@ import {
 import { db } from '../../firebase';
 
 const UserManagement = () => {
+  const { t } = useTranslation(); // Initialize the translation hook
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newUser, setNewUser] = useState({ name: '', password: '' });
@@ -56,7 +58,7 @@ const UserManagement = () => {
 
   return (
     <section>
-      <h2 className='text-3xl font-bold mb-4'>User Management</h2>
+      <h2 className='text-3xl font-bold mb-4'>{t('userManagement')}</h2>
       <div className='bg-white dark:bg-gray-800 p-6 rounded-lg shadow'>
         <form
           onSubmit={addUser}
@@ -66,7 +68,7 @@ const UserManagement = () => {
             value={newUser.name}
             onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
             className='p-2 border border-gray-300 dark:border-gray-600 rounded flex-1 dark:text-black'
-            placeholder='Name'
+            placeholder={t('name')}
           />
           <input
             type='password'
@@ -75,20 +77,20 @@ const UserManagement = () => {
               setNewUser({ ...newUser, password: e.target.value })
             }
             className='p-2 border border-gray-300 dark:border-gray-600 rounded flex-1 dark:text-black'
-            placeholder='Password'
+            placeholder={t('password')}
           />
           <button
             type='submit'
             className='bg-blue-600 text-white px-4 py-2 rounded'
           >
-            Add User
+            {t('addUser')} // Localized button text
           </button>
         </form>
 
         <div>
-          <h3 className='text-2xl font-semibold mb-2'>User List</h3>
+          <h3 className='text-2xl font-semibold mb-2'>{t('userList')}</h3>
           {loading ? (
-            <p className='text-center py-4'>Loading users...</p>
+            <p className='text-center py-4'>{t('loadingUsers')}</p>
           ) : (
             <ul className='space-y-2'>
               {users.map((user) => (

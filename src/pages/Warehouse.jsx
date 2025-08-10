@@ -4,8 +4,11 @@ import ProductsTable from '../components/warehouse/ProductsTable';
 import AddItemForm from '../components/warehouse/AddItemForm';
 import ProductModal from '../components/warehouse/ProductModal';
 import { getProducts, updateItem, deleteItem } from '../utils/FetchData';
+import { useTranslation } from 'react-i18next';
 
 const Warehouse = () => {
+  const { t } = useTranslation();
+
   const [items, setItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +28,7 @@ const Warehouse = () => {
         setItems(products);
         setFilteredItems(products);
       } catch (error) {
-        setError(error.message);
+        setError(t('failedToLoadProducts'));
         console.error('Error:', error);
       } finally {
         setLoading(false);
@@ -122,6 +125,7 @@ const Warehouse = () => {
         filterDate={filterDate}
         setFilterDate={setFilterDate}
         onReset={resetFilters}
+        t={t}
       />
 
       {error && (
@@ -135,11 +139,15 @@ const Warehouse = () => {
           items={filteredItems}
           openModal={openModal}
           loading={loading}
+          t={t}
         />
       )}
 
       {selectedPage === 1 && (
-        <AddItemForm onAddItem={(newItem) => setItems([...items, newItem])} />
+        <AddItemForm
+          onAddItem={(newItem) => setItems([...items, newItem])}
+          t={t}
+        />
       )}
 
       {showModal && currentItem && (
@@ -150,6 +158,7 @@ const Warehouse = () => {
           handleDelete={handleDelete}
           closeModal={closeModal}
           loading={actionLoading}
+          t={t}
         />
       )}
     </div>
