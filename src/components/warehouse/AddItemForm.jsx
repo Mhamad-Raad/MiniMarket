@@ -106,7 +106,6 @@ const AddItemForm = ({ onAddItem }) => {
 
     setLoading(true);
 
-
     try {
       if (existingProduct) {
         const updatedItem = {
@@ -120,7 +119,6 @@ const AddItemForm = ({ onAddItem }) => {
           existingProduct.docId,
           updatedItem
         );
-
 
         if (updatedProduct) {
           showToast('Product updated successfully!', 'success');
@@ -194,35 +192,29 @@ const AddItemForm = ({ onAddItem }) => {
             required
           />
 
-          {existingProduct && (
-            <>
-              <label className='font-medium text-gray-700 dark:text-gray-200'>
-                Name:
-              </label>
-              <input
-                type='text'
-                value={newItem.name}
-                onChange={(e) =>
-                  setNewItem({ ...newItem, name: e.target.value })
-                }
-                className='p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
-                required
-              />
+          <label className='font-medium text-gray-700 dark:text-gray-200'>
+            Name:
+          </label>
+          <input
+            type='text'
+            value={newItem.name}
+            onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+            className='p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
+            required
+          />
 
-              <label className='font-medium text-gray-700 dark:text-gray-200'>
-                Quantity:
-              </label>
-              <input
-                type='number'
-                value={newItem.quantity}
-                onChange={(e) =>
-                  setNewItem({ ...newItem, quantity: e.target.value })
-                }
-                className='p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
-                required
-              />
-            </>
-          )}
+          <label className='font-medium text-gray-700 dark:text-gray-200'>
+            Quantity:
+          </label>
+          <input
+            type='number'
+            value={newItem.quantity}
+            onChange={(e) =>
+              setNewItem({ ...newItem, quantity: e.target.value })
+            }
+            className='p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
+            required
+          />
 
           <label className='font-medium text-gray-700 dark:text-gray-200'>
             Wholesale Price:

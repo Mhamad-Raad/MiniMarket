@@ -30,6 +30,14 @@ export const addNewItem = async (item) => {
   try {
     const docRef = await addDoc(collection(db, 'items'), item);
     console.log('New item added with ID:', docRef.id);
+
+    const newsData = {
+      action: 'Added Item',
+      date: new Date().toISOString(),
+      description: `Item ID: ${docRef.id} was added with name: ${item.name}`,
+    };
+    await addNews(newsData);
+
     return { id: docRef.id, ...item };
   } catch (error) {
     console.error('Error adding new item:', error);
@@ -58,6 +66,14 @@ export const updateItem = async (docId, updatedData) => {
   try {
     const itemRef = doc(db, 'items', docId);
     await updateDoc(itemRef, updatedData);
+
+    const newsData = {
+      action: 'Updated Item',
+      date: new Date().toISOString(),
+      description: `Item ID: ${docId} was updated with new details`,
+    };
+    await addNews(newsData);
+
     return { docId, ...updatedData };
   } catch (error) {
     console.error('Error updating item:', error);
@@ -69,6 +85,14 @@ export const deleteItem = async (docId) => {
   try {
     const itemRef = doc(db, 'items', docId);
     await deleteDoc(itemRef);
+
+    const newsData = {
+      action: 'Deleted Item',
+      date: new Date().toISOString(),
+      description: `Item ID: ${docId} was deleted`,
+    };
+    await addNews(newsData);
+
     return true;
   } catch (error) {
     console.error('Error deleting item:', error);
@@ -158,6 +182,15 @@ export const processRefund = async (refundedItems) => {
         console.warn(`Item with UPC ${item.upc} not found in database.`);
       }
     }
+
+    const newsData = {
+      action: 'Processed Refund',
+      date: new Date().toISOString(),
+      description: `Refund processed for items: ${refundedItems
+        .map((item) => item.name)
+        .join(', ')}`,
+    };
+    await addNews(newsData);
 
     return true;
   } catch (error) {

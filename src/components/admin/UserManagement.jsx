@@ -65,7 +65,7 @@ const UserManagement = () => {
           <input
             value={newUser.name}
             onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-            className='p-2 border border-gray-300 dark:border-gray-600 rounded flex-1'
+            className='p-2 border border-gray-300 dark:border-gray-600 rounded flex-1 dark:text-black'
             placeholder='Name'
           />
           <input
@@ -74,7 +74,7 @@ const UserManagement = () => {
             onChange={(e) =>
               setNewUser({ ...newUser, password: e.target.value })
             }
-            className='p-2 border border-gray-300 dark:border-gray-600 rounded flex-1'
+            className='p-2 border border-gray-300 dark:border-gray-600 rounded flex-1 dark:text-black'
             placeholder='Password'
           />
           <button
